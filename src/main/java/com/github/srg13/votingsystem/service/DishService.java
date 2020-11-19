@@ -1,16 +1,17 @@
 package com.github.srg13.votingsystem.service;
 
-import com.github.srg13.votingsystem.dao.VoteDao;
+import com.github.srg13.votingsystem.dao.DishDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class VoteService {
+public class DishService {
 
-    private final VoteDao repository;
+    private final DishDao repository;
 
     @Autowired
-    public VoteService(VoteDao repository) {
+    public DishService(DishDao repository) {
         this.repository = repository;
     }
+
 }
