@@ -12,8 +12,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = "vote_date", name = "votes_unique_vote_date_idx")})
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"vote_date", "user_id"}, name = "votes_unique_vote_date_user_id_idx")})
 public class Vote extends BaseEntity {
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", nullable = false)
+    private Menu menu;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

@@ -29,7 +29,7 @@ public class User extends NamedEntity {
     @Size(min = 5, max = 100)
     private String password;
 
-    @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
+    @Column(name = "registered_time", nullable = false, columnDefinition = "timestamp default now()")
     @NotNull
     private LocalDateTime registered;
 
