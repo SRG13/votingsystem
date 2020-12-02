@@ -1,7 +1,11 @@
 package com.github.srg13.votingsystem.dao;
 
-import org.springframework.stereotype.Repository;
+import com.github.srg13.votingsystem.model.Dish;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class DishDao {
+import java.util.List;
+
+
+public interface DishDao extends JpaRepository<Dish, Integer> {
+    List<Dish> findAllByMenuId(int menuId);
 }

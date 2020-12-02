@@ -1,7 +1,12 @@
 package com.github.srg13.votingsystem.dao;
 
-import org.springframework.stereotype.Repository;
+import com.github.srg13.votingsystem.model.Vote;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class VoteDao {
+import java.time.LocalDate;
+
+public interface VoteDao extends JpaRepository<Vote, Integer> {
+
+    Vote findByUserIdAndVoteDate(int userid, LocalDate voteDate);
+
 }
