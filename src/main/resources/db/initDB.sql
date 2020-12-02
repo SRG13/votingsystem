@@ -19,7 +19,8 @@ CREATE TABLE users
     name            VARCHAR                 NOT NULL,
     email           VARCHAR                 NOT NULL,
     password        VARCHAR                 NOT NULL,
-    registered_time TIMESTAMP DEFAULT now() NOT NULL
+    registered_time TIMESTAMP DEFAULT now() NOT NULL,
+    enabled         BOOLEAN   DEFAULT TRUE  NOT NULL
 );
 CREATE UNIQUE INDEX users_unique_email_idx ON users (email);
 
@@ -34,9 +35,9 @@ CREATE TABLE user_roles
 CREATE TABLE menus
 (
     id            INTEGER   DEFAULT nextval('global_seq') PRIMARY KEY,
-    restaurant_id INTEGER                 NOT NULL,
+    restaurant_id INTEGER NOT NULL,
     name          VARCHAR,
-    menu_date     TIMESTAMP DEFAULT now() NOT NULL,
+    menu_date     TIMESTAMP DEFAULT now(),
     CONSTRAINT menus_unique_date_restaurant_id_idx UNIQUE (menu_date, restaurant_id),
     FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE
 );
@@ -54,9 +55,9 @@ CREATE TABLE dishes
 CREATE TABLE votes
 (
     id        INTEGER DEFAULT nextval('global_seq') PRIMARY KEY,
-    menu_id   INTEGER   NOT NULL,
-    user_id   INTEGER   NOT NULL,
-    vote_date TIMESTAMP NOT NULL,
+    menu_id   INTEGER NOT NULL,
+    user_id   INTEGER NOT NULL,
+    vote_date DATE    NOT NULL,
     CONSTRAINT votes_unique_vote_date_user_id_idx UNIQUE (vote_date, user_id),
     FOREIGN KEY (menu_id) REFERENCES menus (id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
