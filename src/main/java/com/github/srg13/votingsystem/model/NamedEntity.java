@@ -17,4 +17,9 @@ public class NamedEntity extends BaseEntity {
     @Size(min = 2, max = 100)
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Override
+    public String toString() {
+        return super.toString() + '(' + name + ')';
+    }
 }

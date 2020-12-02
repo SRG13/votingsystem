@@ -1,5 +1,6 @@
 package com.github.srg13.votingsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
         name = "unique_menu_id_name_idx")})
 public class Dish extends NamedEntity {
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
@@ -25,4 +27,13 @@ public class Dish extends NamedEntity {
     @DecimalMin(value = "0.0")
     @Digits(integer = 4, fraction = 2)
     private BigDecimal price;
+
+    @Override
+    public String toString() {
+        return "Dish{" +
+                "id=" + id +
+                ", menu=" + menu +
+                ", price=" + price +
+                '}';
+    }
 }

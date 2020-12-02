@@ -1,5 +1,6 @@
 package com.github.srg13.votingsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -17,16 +18,27 @@ import java.util.List;
         name = "menus_unique_date_restaurant_id_idx")})
 public class Menu extends NamedEntity {
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Restaurant restaurant;
 
-    @Column(name = "menu_date", nullable = false)
+    @Column(name = "menu_date")
     @NotNull
-    private LocalDate date;
+    private LocalDate date = LocalDate.now();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu")
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "menu")
     private List<Dish> dishes;
 
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "id=" + id +
+                ", restaurant=" + restaurant +
+                ", date=" + date +
+                ", dishes=" + dishes +
+                '}';
+    }
 }
