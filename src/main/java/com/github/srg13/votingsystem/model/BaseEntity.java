@@ -1,5 +1,6 @@
 package com.github.srg13.votingsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.github.srg13.votingsystem.HasId;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,10 +8,14 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
+
 @Getter
 @Setter
 @MappedSuperclass
 @Access(AccessType.FIELD)
+@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, isGetterVisibility = NONE, setterVisibility = NONE)
 public class BaseEntity implements HasId {
     public static final int START_SEQ = 100000;
 
