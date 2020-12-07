@@ -7,6 +7,7 @@ import com.github.srg13.votingsystem.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,6 +32,7 @@ public class MenuService {
                 .orElseThrow(() -> new NotFoundException("Menu with id=" + id + " not found."));
     }
 
+    @Transactional
     public void delete(int id) {
         repository.deleteById(id);
     }
@@ -39,6 +41,7 @@ public class MenuService {
         return repository.findAllByRestaurantId(restaurantId);
     }
 
+    @Transactional
     public Menu create(Menu menu, int restaurantId) {
         checkNew(menu);
         checkExistForThisDay(menu.getDate(), restaurantId);

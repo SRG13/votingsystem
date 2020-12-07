@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new NotFoundException("User with id=" + id + " not found."));
     }
 
+    @Transactional
     public void delete(int id) {
         repository.deleteById(id);
     }
@@ -46,10 +48,12 @@ public class UserService implements UserDetailsService {
         return repository.findAll();
     }
 
+    @Transactional
     public void update(User user) {
         repository.save(prepareToSave(user));
     }
 
+    @Transactional
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
         return repository.save(prepareToSave(user));
