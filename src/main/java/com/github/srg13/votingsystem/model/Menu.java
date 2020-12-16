@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "menus", uniqueConstraints = {@UniqueConstraint(columnNames = {"menu_date", "restaurant_id"},
         name = "menus_unique_date_restaurant_id_idx")})
-public class Menu extends NamedEntity {
+public class Menu extends AbstractNamedEntity {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,13 +32,20 @@ public class Menu extends NamedEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "menu")
     private List<Dish> dishes;
 
+    public Menu() {
+    }
+
+    public Menu(Integer id, String name, @NotNull LocalDate date) {
+        super(id, name);
+        this.date = date;
+    }
+
     @Override
     public String toString() {
         return "Menu{" +
                 "id=" + id +
-                ", restaurant=" + restaurant +
+                ", name=" + name +
                 ", date=" + date +
-                ", dishes=" + dishes +
                 '}';
     }
 }

@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = {"menu_id", "name"},
         name = "unique_menu_id_name_idx")})
-public class Dish extends NamedEntity {
+public class Dish extends AbstractNamedEntity {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,7 +32,6 @@ public class Dish extends NamedEntity {
     public String toString() {
         return "Dish{" +
                 "id=" + id +
-                ", menu=" + menu +
                 ", price=" + price +
                 '}';
     }

@@ -16,13 +16,20 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 @MappedSuperclass
 @Access(AccessType.FIELD)
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, isGetterVisibility = NONE, setterVisibility = NONE)
-public class BaseEntity implements HasId {
+public abstract class AbstractBaseEntity implements HasId {
     public static final int START_SEQ = 100000;
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = START_SEQ)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     protected Integer id;
+
+    protected AbstractBaseEntity() {
+    }
+
+    protected AbstractBaseEntity(Integer id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {
@@ -37,7 +44,7 @@ public class BaseEntity implements HasId {
         if (o == null || !getClass().equals(Hibernate.getClass(o))) {
             return false;
         }
-         BaseEntity that = (BaseEntity) o;
+        AbstractBaseEntity that = (AbstractBaseEntity) o;
         return id != null && id.equals(that.id);
     }
 

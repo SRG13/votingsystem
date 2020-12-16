@@ -11,12 +11,20 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @MappedSuperclass
-public class NamedEntity extends BaseEntity {
+public abstract class AbstractNamedEntity extends AbstractBaseEntity {
 
     @NotBlank
     @Size(min = 2, max = 100)
     @Column(name = "name", nullable = false)
-    private String name;
+    protected String name;
+
+    protected AbstractNamedEntity() {
+    }
+
+    protected AbstractNamedEntity(Integer id, String name) {
+        super(id);
+        this.name = name;
+    }
 
     @Override
     public String toString() {
