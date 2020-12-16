@@ -37,7 +37,7 @@ CREATE TABLE menus
     id            INTEGER   DEFAULT nextval('global_seq') PRIMARY KEY,
     restaurant_id INTEGER NOT NULL,
     name          VARCHAR,
-    menu_date     TIMESTAMP DEFAULT now(),
+    menu_date     DATE DEFAULT now(),
     CONSTRAINT menus_unique_date_restaurant_id_idx UNIQUE (menu_date, restaurant_id),
     FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE
 );
@@ -54,11 +54,11 @@ CREATE TABLE dishes
 
 CREATE TABLE votes
 (
-    id        INTEGER DEFAULT nextval('global_seq') PRIMARY KEY,
-    menu_id   INTEGER NOT NULL,
-    user_id   INTEGER NOT NULL,
-    vote_date DATE    NOT NULL,
-    CONSTRAINT votes_unique_vote_date_user_id_idx UNIQUE (vote_date, user_id),
+    id              INTEGER DEFAULT nextval('global_seq') PRIMARY KEY,
+    menu_id         INTEGER NOT NULL,
+    user_id         INTEGER NOT NULL,
+    vote_date_time  TIMESTAMP(0) DEFAULT now() NOT NULL,
+    CONSTRAINT votes_unique_vote_date_user_id_idx UNIQUE (vote_date_time, user_id),
     FOREIGN KEY (menu_id) REFERENCES menus (id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
