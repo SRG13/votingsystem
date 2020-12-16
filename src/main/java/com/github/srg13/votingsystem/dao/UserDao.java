@@ -5,14 +5,16 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 
 public interface UserDao extends JpaRepository<User, Integer> {
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     //    https://stackoverflow.com/a/46013654/548473
     @EntityGraph(attributePaths = {"votes"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query("SELECT u FROM User u WHERE u.id=?1")
-    User getWithVotes(int id);
+    @Query("SELECT u FROM User u WHERE u.id=:id")
+    Optional<User> getWithVotes(int id);
 
 }
