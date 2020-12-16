@@ -26,10 +26,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = repository.findByEmail(email);
-        if (user == null) {
-            throw new UsernameNotFoundException("User " + email + "not found.");
-        }
+        User user = getByEmail(email);
 
         return new AuthorizedUser(user);
     }
@@ -37,6 +34,11 @@ public class UserService implements UserDetailsService {
     public User get(int id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with id=" + id + " not found."));
+    }
+
+    public User getByEmail(String email) {
+        return repository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + email + "not found."));
     }
 
     @Transactional
@@ -60,7 +62,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User getWithVotes(int id) {
-        return repository.getWithVotes(id);
+        return repository.getWithVotes(id)
+                .orElseThrow(() -> new NotFoundException("User with id=" + id + " not found."));
     }
 
     public static User prepareToSave(User user) {

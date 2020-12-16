@@ -21,6 +21,11 @@ public class AdminController extends AbstractUserController {
         return super.get(id);
     }
 
+    @GetMapping("/by")
+    public User getByEmail(@RequestParam String email) {
+        return super.getByEmail(email);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {

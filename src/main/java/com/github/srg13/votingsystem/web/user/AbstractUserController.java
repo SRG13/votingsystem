@@ -22,6 +22,11 @@ public abstract class AbstractUserController {
         return service.get(id);
     }
 
+    public User getByEmail(String email) {
+        log.info("getByEmail {}", email);
+        return service.getByEmail(email);
+    }
+
     public void delete(int id) {
         log.info("delete {}", id);
         service.delete(id);
