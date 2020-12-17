@@ -31,11 +31,17 @@ public class VoteService {
         this.userRepository = userRepository;
     }
 
+    public Vote get(int userId, int menuId) {
+        return voteRepository.findByUserIdAndMenuId(userId, menuId)
+                .orElseThrow(() -> new IllegalRequestDataException
+                        ("Vote of user=" + userId + " for menu=" + menuId + " doesn't exist"));
+    }
+
     public Vote create(Vote vote, int userId, int menuId) {
         checkMenuDate(menuId);
         if (isVoted(userId)) {
-            checkTimeForReVote();
-            vote.setId(voteRepository.findByUserIdAndVoteDate(userId, LocalDate.now()).getId());
+            checkTimeForReVote(vote.getVoteDateTime().toLocalTime());
+            vote.setId(voteRepository.findByUserIdAndDate(userId, LocalDate.now()).get().getId());
         }
 
         vote.setMenu(menuRepository.getOne(menuId));
@@ -54,14 +60,14 @@ public class VoteService {
         }
     }
 
-    private void checkTimeForReVote() {
-        if (LocalTime.now().isAfter(TIME_THRESHOLD)) {
+    private void checkTimeForReVote(LocalTime voteTime) {
+        if (voteTime.isAfter(TIME_THRESHOLD)) {
             throw new IllegalRequestDataException("Too late to change your vote.");
         }
     }
 
     private boolean isVoted(int userId) {
-        return voteRepository.findByUserIdAndVoteDate(userId, LocalDate.now()) != null;
+        return voteRepository.findByUserIdAndDate(userId, LocalDate.now()).isPresent();
     }
 
 }

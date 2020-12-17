@@ -28,6 +28,13 @@ public class VoteController {
     }
 
     @PreAuthorize("hasRole('USER')")
+    @GetMapping
+    public Vote get(@AuthenticationPrincipal AuthorizedUser authUser, @PathVariable int menuId) {
+        log.info("get user {} vote for menu {}", authUser.getId(), menuId);
+        return service.get(authUser.getId(), menuId);
+    }
+
+    @PreAuthorize("hasRole('USER')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Vote vote(@AuthenticationPrincipal AuthorizedUser authUser, @PathVariable int menuId) {
