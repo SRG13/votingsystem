@@ -51,7 +51,7 @@ public class MenuService {
     }
 
     private void checkExistForThisDay(LocalDate date, int restaurantId) {
-        if (repository.findByRestaurantIdAndDate(restaurantId, date) != null) {
+        if (repository.findByRestaurantIdAndDate(restaurantId, date).isPresent()) {
             throw new IllegalRequestDataException("Menu at " + date + " date already exist.");
         }
     }
