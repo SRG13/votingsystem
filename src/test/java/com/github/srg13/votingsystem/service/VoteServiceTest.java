@@ -11,7 +11,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import java.time.LocalDate;
 
 import static com.github.srg13.votingsystem.util.MenuTestData.MENU1_ID;
-import static com.github.srg13.votingsystem.util.MenuTestData.OLD_MENU;
+import static com.github.srg13.votingsystem.util.MenuTestData.OLD_MENU_ID;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1_ID;
 import static com.github.srg13.votingsystem.util.UserTestData.USER_ID_NOT_VOTED;
 import static com.github.srg13.votingsystem.util.VoteTestData.VOTE;
@@ -27,7 +27,7 @@ class VoteServiceTest {
 
     @Test
     void get() {
-        Vote vote = service.get(USER1_ID, OLD_MENU);
+        Vote vote = service.get(USER1_ID, OLD_MENU_ID);
         assertThat(vote).usingRecursiveComparison().ignoringFields("menu", "voteDateTime", "user").isEqualTo(VOTE);
     }
 
@@ -69,6 +69,6 @@ class VoteServiceTest {
 
     @Test
     void voteForOldMenu() {
-        assertThrows(IllegalRequestDataException.class, () -> service.create(new Vote(), 100000, OLD_MENU));
+        assertThrows(IllegalRequestDataException.class, () -> service.create(new Vote(), 100000, OLD_MENU_ID));
     }
 }

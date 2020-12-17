@@ -10,7 +10,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
 import static com.github.srg13.votingsystem.util.MenuTestData.*;
-import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT1_ID;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,8 +23,8 @@ class MenuServiceTest {
 
     @Test
     void get() {
-        Menu menu = service.get(MENU1_ID);
-        assertThat(menu).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENU_1);
+        Menu menu = service.get(OLD_MENU_ID);
+        assertThat(menu).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(OLD_MENU);
     }
 
     @Test
@@ -41,7 +40,7 @@ class MenuServiceTest {
 
     @Test
     void getAll() {
-        assertThat(service.getAll(RESTAURANT1_ID)).usingElementComparatorIgnoringFields("restaurant", "dishes").isEqualTo(MENUS);
+        assertThat(service.getAll(RESTAURANT3_ID)).usingElementComparatorIgnoringFields("restaurant", "dishes").isEqualTo(MENUS);
     }
 
     @Test
