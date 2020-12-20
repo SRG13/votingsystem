@@ -19,7 +19,7 @@ CREATE TABLE users
     name            VARCHAR                 NOT NULL,
     email           VARCHAR                 NOT NULL,
     password        VARCHAR                 NOT NULL,
-    registered_time TIMESTAMP DEFAULT now() NOT NULL,
+    registered_time TIMESTAMP(0) DEFAULT now() NOT NULL,
     enabled         BOOLEAN   DEFAULT TRUE  NOT NULL
 );
 CREATE UNIQUE INDEX users_unique_email_idx ON users (email);

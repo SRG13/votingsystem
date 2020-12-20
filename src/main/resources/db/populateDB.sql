@@ -10,10 +10,10 @@ DELETE
 FROM restaurants;
 ALTER SEQUENCE global_seq restart with 100000;
 
-INSERT INTO users (NAME, EMAIL, PASSWORD)
-VALUES ('Petr', 'admin@yandex.ru', 'admin'),
-       ('Sergey', 'user@gmail.com', 'pass123'),
-       ('Anna', 'bar@gmail.com', 's3cr3t');
+INSERT INTO users (NAME, EMAIL, PASSWORD, REGISTERED_TIME)
+VALUES ('Petr', 'admin@yandex.ru', 'admin', '2020-01-30 12:00:44'),
+       ('Sergey', 'user@gmail.com', 'pass123', '2020-02-05 13:05:11'),
+       ('Anna', 'bar@gmail.com', 's3cr3t', '2020-02-19 09:13:42');
 
 INSERT INTO restaurants (NAME)
 VALUES ('107 West'),
