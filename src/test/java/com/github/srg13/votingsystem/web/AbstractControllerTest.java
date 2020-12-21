@@ -1,5 +1,6 @@
 package com.github.srg13.votingsystem.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,8 +51,8 @@ public class AbstractControllerTest {
     protected String asJsonString(final Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Invalid write to JSON:\n'" + obj + "'", e);
         }
     }
 }

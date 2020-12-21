@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping(ProfileController.REST_URL)
 public class ProfileController extends AbstractUserController {
-    static final String REST_URL = "/profile";
+    protected static final String REST_URL = "/profile";
 
     @Autowired
     private VoteService voteService;

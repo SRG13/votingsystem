@@ -23,7 +23,7 @@ import static com.github.srg13.votingsystem.util.ValidationUtil.checkNew;
 @RequestMapping(DishController.REST_URL)
 public class DishController {
 
-    static final String REST_URL = "/restaurants/{restaurantId}/menus/{menuId}/dishes";
+    protected static final String REST_URL = "/restaurants/{restaurantId}/menus/{menuId}/dishes";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 

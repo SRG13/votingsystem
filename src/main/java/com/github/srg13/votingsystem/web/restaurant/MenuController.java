@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping(value = MenuController.REST_URL)
 public class MenuController {
 
-    static final String REST_URL = "/restaurants/{restaurantId}/menus";
+    protected static final String REST_URL = "/restaurants/{restaurantId}/menus";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 

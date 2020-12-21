@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(VoteController.REST_URL)
 public class VoteController {
 
-    final static String REST_URL = "restaurants/{restaurantId}/menus/{menuId}/vote";
+    protected static final String REST_URL = "restaurants/{restaurantId}/menus/{menuId}/vote";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
