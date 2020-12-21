@@ -15,6 +15,7 @@ import static com.github.srg13.votingsystem.util.MenuTestData.OLD_MENU_ID;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1_ID;
 import static com.github.srg13.votingsystem.util.UserTestData.USER_ID_NOT_VOTED;
 import static com.github.srg13.votingsystem.util.VoteTestData.VOTE;
+import static com.github.srg13.votingsystem.util.VoteTestData.VOTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -34,6 +35,11 @@ class VoteServiceTest {
     @Test
     void getNotExist() {
         assertThrows(IllegalRequestDataException.class, () -> service.get(USER1_ID, -1));
+    }
+
+    @Test
+    void getAll() {
+        assertThat(service.getAll(USER_ID_NOT_VOTED)).usingElementComparatorIgnoringFields("menu", "user").isEqualTo(VOTES);
     }
 
     @Test
