@@ -30,8 +30,13 @@ public class UserTestData {
 
     public static final List<User> USERS = List.of(ADMIN, USER1, USER2);
 
-    public static final List<User> USERS = List.of(new User(ADMIN_ID, "Petr", "admin@yandex.ru", true, EnumSet.of(Role.USER, Role.ADMIN)),
-            USER, new User(USER_ID_NOT_VOTED, "Anna", "bar@gmail.com", true, EnumSet.of(Role.USER)));
+    public static final String USER_JSON = "{\"id\":100002,\"name\":\"Anna\",\"email\":\"bar@gmail.com\",\"registered\":\"2020-02-19T09:13:42\",\"enabled\":true,\"roles\":[\"USER\"]}";
+
+    public static final String USER_JSON_NEW = "{\"name\":\"Fedr\",\"email\":\"fedya@gmail.com\", \"password\": \"qwerty123\"}";
+
+    public static final String USERS_JSON = "[{\"id\":100000,\"name\":\"Petr\",\"email\":\"admin@yandex.ru\",\"registered\":\"2020-01-30T12:00:44\",\"enabled\":true,\"roles\":[\"ADMIN\",\"USER\"]}," +
+            "{\"id\":100001,\"name\":\"Sergey\",\"email\":\"user@gmail.com\",\"registered\":\"2020-02-05T13:05:11\",\"enabled\":true,\"roles\":[\"USER\"]}," +
+            "{\"id\":100002,\"name\":\"Anna\",\"email\":\"bar@gmail.com\",\"registered\":\"2020-02-19T09:13:42\",\"enabled\":true,\"roles\":[\"USER\"]}]";
 
     public static User getNew() {
         return new User(null, "New_menu", "hoho@gmail.com", "qwerty", LocalDateTime.of(2020, 10, 3, 10, 3), true, EnumSet.of(Role.USER));
