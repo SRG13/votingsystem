@@ -35,12 +35,6 @@ public class ProfileController extends AbstractUserController {
         super.delete(authUser.getId());
     }
 
-    @PutMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal AuthorizedUser authUser, @RequestBody User user) {
-        super.update(user, authUser.getId());
-    }
-
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> register(@Valid @RequestBody User user) {
         User created = super.create(user);

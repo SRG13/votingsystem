@@ -45,14 +45,7 @@ class UserServiceTest {
 
     @Test
     void getAll() {
-        assertThat(service.getAll()).usingElementComparatorIgnoringFields("registered", "password", "votes").isEqualTo(USERS);
-    }
-
-    @Test
-    void update() {
-        User updated = getUpdated();
-        service.update(updated);
-        assertThat(service.get(USER1_ID)).usingRecursiveComparison().ignoringFields("password", "registered", "votes").isEqualTo(getUpdated());
+        assertThat(service.getAll()).usingElementComparatorIgnoringFields("registered", "password").isEqualTo(USERS);
     }
 
     @Test

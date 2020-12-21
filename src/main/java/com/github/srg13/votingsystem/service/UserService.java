@@ -51,11 +51,6 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void update(User user) {
-        repository.save(prepareToSave(user));
-    }
-
-    @Transactional
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
         return repository.save(prepareToSave(user));
