@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.EnumSet;
 
 import static com.github.srg13.votingsystem.util.UserTestData.*;
-import static com.github.srg13.votingsystem.util.VoteTestData.VOTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -30,7 +29,7 @@ class UserServiceTest {
     @Transactional
     void get() {
         User user = service.get(USER1_ID);
-        assertThat(user).usingRecursiveComparison().ignoringFields("password", "registered", "votes").isEqualTo(USER);
+        assertThat(user).usingRecursiveComparison().ignoringFields("password", "registered").isEqualTo(USER1);
     }
 
     @Test
@@ -64,23 +63,16 @@ class UserServiceTest {
         newUser.setId(newId);
 
         assertThat(created)
-                .usingRecursiveComparison().ignoringFields("password", "registered", "votes").isEqualTo(newUser);
+                .usingRecursiveComparison().ignoringFields("password", "registered").isEqualTo(newUser);
 
         assertThat(service.get(newId))
-                .usingRecursiveComparison().ignoringFields("password", "registered", "votes").isEqualTo(newUser);
+                .usingRecursiveComparison().ignoringFields("password", "registered").isEqualTo(newUser);
 
     }
 
     @Test
     void duplicateMailCreate() {
         assertThrows(DataAccessException.class, () ->
-                service.create(new User(null, "Duplicate", "user@gmail.com", "newPass", LocalDateTime.now(), true, EnumSet.of(Role.USER), null)));
-    }
-
-    @Test
-    void getWithVotes() {
-        User user = service.getWithVotes(USER_ID_NOT_VOTED);
-        System.out.println(user.getVotes());
-        assertThat(user.getVotes()).usingElementComparatorIgnoringFields("menu", "user").isEqualTo(VOTES);
+                service.create(new User(null, "Duplicate", "user@gmail.com", "newPass", LocalDateTime.now(), true, EnumSet.of(Role.USER))));
     }
 }

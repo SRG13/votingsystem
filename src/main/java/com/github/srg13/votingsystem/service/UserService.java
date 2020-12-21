@@ -61,11 +61,6 @@ public class UserService implements UserDetailsService {
         return repository.save(prepareToSave(user));
     }
 
-    public User getWithVotes(int id) {
-        return repository.getWithVotes(id)
-                .orElseThrow(() -> new NotFoundException("User with id=" + id + " not found."));
-    }
-
     public static User prepareToSave(User user) {
         user.setEmail(user.getEmail().toLowerCase());
         return user;

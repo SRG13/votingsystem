@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static com.github.srg13.votingsystem.util.ValidationUtil.assureIdConsistent;
 import static com.github.srg13.votingsystem.util.ValidationUtil.checkNew;
 
 public abstract class AbstractUserController {
@@ -47,10 +46,5 @@ public abstract class AbstractUserController {
         log.info("create {}", user);
         checkNew(user);
         return service.create(user);
-    }
-
-    public User getWithVotes(int id) {
-        log.info("getWithVotes {}", id);
-        return service.getWithVotes(id);
     }
 }

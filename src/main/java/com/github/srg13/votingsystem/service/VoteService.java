@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 public class VoteService {
@@ -35,6 +36,10 @@ public class VoteService {
         return voteRepository.findByUserIdAndMenuId(userId, menuId)
                 .orElseThrow(() -> new IllegalRequestDataException
                         ("Vote of user=" + userId + " for menu=" + menuId + " doesn't exist"));
+    }
+
+    public List<Vote> getAll(int userId) {
+        return voteRepository.findByUserIdOrderByVoteDateTimeDesc(userId);
     }
 
     public Vote create(Vote vote, int userId, int menuId) {

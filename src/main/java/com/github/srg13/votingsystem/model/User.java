@@ -47,36 +47,19 @@ public class User extends AbstractNamedEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles = EnumSet.of(Role.USER);
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @OrderBy("voteDateTime DESC")
-    @JsonManagedReference
-    private List<Vote> votes;
-
-    public User() {
-    }
-
-    public User(Integer id, String name, @Email @NotBlank @Size(max = 100) String email) {
-        super(id, name);
-        this.email = email;
-    }
-
-    public User(Integer id, String name, @Email @NotBlank @Size(max = 100) String email, boolean enabled, Set<Role> roles) {
-        this(id, name, email);
-        this.enabled = enabled;
-        this.roles = roles;
-    }
-
     public User(Integer id, String name, @Email @NotBlank @Size(max = 100) String email,
                 @NotBlank @Size(min = 5, max = 100) String password,
-                LocalDateTime registered, boolean enabled, Set<Role> roles, List<Vote> votes) {
-        this(id, name, email, enabled, roles);
+                LocalDateTime registered, boolean enabled, Set<Role> roles) {
+        super(id, name);
+        this.email = email;
+        this.enabled = enabled;
+        this.roles = roles;
         this.password = password;
         this.registered = registered;
-        this.votes = votes;
     }
 
     public User(User u) {
-        this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.getRegistered(), u.isEnabled(), u.getRoles(), u.getVotes());
+        this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.getRegistered(), u.isEnabled(), u.getRoles());
     }
 
     public void setRoles(Collection<Role> roles) {
