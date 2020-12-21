@@ -3,6 +3,7 @@ package com.github.srg13.votingsystem.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.github.srg13.votingsystem.HasId;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @MappedSuperclass
@@ -23,9 +25,6 @@ public abstract class AbstractBaseEntity implements HasId {
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = START_SEQ)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     protected Integer id;
-
-    protected AbstractBaseEntity() {
-    }
 
     protected AbstractBaseEntity(Integer id) {
         this.id = id;

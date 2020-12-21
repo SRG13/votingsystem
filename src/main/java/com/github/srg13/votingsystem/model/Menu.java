@@ -2,6 +2,7 @@ package com.github.srg13.votingsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -9,8 +10,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.List;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -27,13 +28,6 @@ public class Menu extends AbstractNamedEntity {
     @Column(name = "menu_date")
     @NotNull
     private LocalDate date = LocalDate.now();
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "menu")
-    private List<Dish> dishes;
-
-    public Menu() {
-    }
 
     public Menu(Integer id, String name, @NotNull LocalDate date) {
         super(id, name);

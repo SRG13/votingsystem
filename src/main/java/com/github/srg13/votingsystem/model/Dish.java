@@ -2,6 +2,7 @@ package com.github.srg13.votingsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -27,6 +29,12 @@ public class Dish extends AbstractNamedEntity {
     @DecimalMin(value = "0.0")
     @Digits(integer = 4, fraction = 2)
     private BigDecimal price;
+
+    public Dish(Integer id, String name, Menu menu, @NotNull @DecimalMin(value = "0.0") @Digits(integer = 4, fraction = 2) BigDecimal price) {
+        super(id, name);
+        this.menu = menu;
+        this.price = price;
+    }
 
     @Override
     public String toString() {

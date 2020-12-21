@@ -1,8 +1,8 @@
 package com.github.srg13.votingsystem.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -32,9 +33,6 @@ public class Vote extends AbstractBaseEntity {
     @Column(name = "vote_date_time", nullable = false)
     @NotNull
     private LocalDateTime voteDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-
-    public Vote() {
-    }
 
     public Vote(Integer id, @NotNull LocalDateTime voteDateTime) {
         super(id);
