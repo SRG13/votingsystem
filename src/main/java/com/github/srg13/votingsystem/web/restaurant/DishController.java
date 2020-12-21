@@ -7,6 +7,7 @@ import com.github.srg13.votingsystem.model.Dish;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,39 +23,40 @@ import static com.github.srg13.votingsystem.util.ValidationUtil.checkNew;
 @RequestMapping(DishController.REST_URL)
 public class DishController {
 
-    static final String REST_URL = "restaurants/{restaurantId}/menus/{menuId}/dishes";
+    static final String REST_URL = "/restaurants/{restaurantId}/menus/{menuId}/dishes";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final DishDao repository;
+    private final DishDao dishRepository;
 
     private final MenuDao menuRepository;
 
 
     @Autowired
     public DishController(DishDao repository, MenuDao menuRepository) {
-        this.repository = repository;
+        this.dishRepository = repository;
         this.menuRepository = menuRepository;
     }
 
     @GetMapping("/{id}")
     public Dish get(@PathVariable int id) {
         log.info("get {}", id);
-        return repository.findById(id)
+        return dishRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Dish with id=" + id + "not found."));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
-        repository.deleteById(id);
+        dishRepository.deleteById(id);
     }
 
     @GetMapping
     public List<Dish> getAll(@PathVariable int menuId) {
         log.info("getAll from menu {}", menuId);
-        return repository.findAllByMenuId(menuId);
+        return dishRepository.findAllByMenuId(menuId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -64,7 +66,7 @@ public class DishController {
         checkNew(dish);
 
         dish.setMenu(menuRepository.getOne(menuId));
-        Dish created = repository.save(dish);
+        Dish created = dishRepository.save(dish);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
