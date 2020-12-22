@@ -40,10 +40,17 @@ class DishControllerTest extends AbstractControllerTest {
     @Test
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + DISH1_ID)
-                .with((userHttpBasic(ADMIN))))
+                .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
 
         assertThrows(NotFoundException.class, () -> service.get(DISH1_ID));
+    }
+
+    @Test
+    void deleteNotAllowed() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + DISH1_ID)
+                .with(userHttpBasic(USER1)))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -60,9 +67,26 @@ class DishControllerTest extends AbstractControllerTest {
         ResultActions resultActions = perform(MockMvcRequestBuilders.post(REST_URL)
                 .content(writeValue(newDish))
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(SecurityMockMvcRequestPostProcessors.authentication(
-                        (new UsernamePasswordAuthenticationToken("admin@yandex.ru", "admin")))))
+                .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+
+        String json = resultActions.andReturn().getResponse().getContentAsString();
+        Dish result = readValue(json, Dish.class);
+        newDish.setId(result.getId());
+
+        assertThat(result).usingRecursiveComparison().ignoringFields("menu").isEqualTo(newDish);
+
+        assertThat(service.get(result.getId())).usingRecursiveComparison().ignoringFields("menu").isEqualTo(newDish);
+    }
+
+    @Test
+    void createNotAllowed() throws Exception {
+        Dish newDish = getNew();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(USER1))
+                .content(writeValue(newDish))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
 }

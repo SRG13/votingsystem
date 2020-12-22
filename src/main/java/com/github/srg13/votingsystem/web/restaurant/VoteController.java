@@ -8,9 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping(VoteController.REST_URL)
@@ -37,9 +41,17 @@ public class VoteController {
     @PreAuthorize("hasRole('USER')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Vote vote(@AuthenticationPrincipal AuthorizedUser authUser, @PathVariable int menuId) {
+    public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthorizedUser authUser, @PathVariable int menuId,
+                                     @PathVariable int restaurantId) {
         log.info("create vote for user {} and menu {}", authUser.getId(), menuId);
-        return service.create(new Vote(), authUser.getId(), menuId);
+
+        Vote created = service.create(new Vote(), authUser.getId(), menuId);
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL)
+                .buildAndExpand(restaurantId, menuId)
+                .toUri();
+
+        return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
 }

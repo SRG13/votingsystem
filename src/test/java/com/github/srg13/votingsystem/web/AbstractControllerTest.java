@@ -48,11 +48,19 @@ public class AbstractControllerTest {
         return mockMvc.perform(builder);
     }
 
-    protected String asJsonString(final Object obj) {
+    protected String writeValue(final Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Invalid write to JSON:\n'" + obj + "'", e);
+        }
+    }
+
+    protected <T> T readValue(String json, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(json, clazz);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Invalid read from JSON:\n'" + json + "'", e);
         }
     }
 }

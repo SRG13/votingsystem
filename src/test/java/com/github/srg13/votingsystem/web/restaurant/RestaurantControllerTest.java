@@ -1,8 +1,11 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
+import com.github.srg13.votingsystem.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Restaurant;
+import com.github.srg13.votingsystem.service.RestaurantService;
 import com.github.srg13.votingsystem.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -12,12 +15,17 @@ import static com.github.srg13.votingsystem.util.RestaurantTestData.*;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.ADMIN;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class RestaurantControllerTest extends AbstractControllerTest {
 
     public static final String REST_URL = RestaurantController.REST_URL + "/";
+
+    @Autowired
+    private RestaurantService service;
 
     @Test
     void get() throws Exception {
@@ -32,10 +40,12 @@ class RestaurantControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT3_ID)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
+
+        assertThrows(NotFoundException.class, () -> service.get(RESTAURANT3_ID));
     }
 
     @Test
-    void deleteNotAdmin() throws Exception {
+    void deleteNotAllowed() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT3_ID)
                 .with(userHttpBasic(USER1)))
                 .andExpect(status().is4xxClientError());
@@ -53,18 +63,26 @@ class RestaurantControllerTest extends AbstractControllerTest {
     void create() throws Exception {
         Restaurant newRestaurant = getNew();
         ResultActions resultActions = perform(MockMvcRequestBuilders.post(REST_URL)
-                .content(asJsonString(newRestaurant))
+                .content(writeValue(newRestaurant))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+
+        String json = resultActions.andReturn().getResponse().getContentAsString();
+        Restaurant result = readValue(json, Restaurant.class);
+        newRestaurant.setId(result.getId());
+
+        assertThat(result).usingRecursiveComparison().isEqualTo(newRestaurant);
+
+        assertThat(service.get(result.getId())).usingRecursiveComparison().isEqualTo(newRestaurant);
     }
 
     @Test
-    void createNotAdmin() throws Exception {
+    void createNotAllowed() throws Exception {
         Restaurant newRestaurant = getNew();
         perform(MockMvcRequestBuilders.post(REST_URL)
-                .content(asJsonString(newRestaurant))
+                .content(writeValue(newRestaurant))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(USER1)))
                 .andExpect(status().is4xxClientError());
