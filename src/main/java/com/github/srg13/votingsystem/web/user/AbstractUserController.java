@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static com.github.srg13.votingsystem.util.ValidationUtil.assureIdConsistent;
 import static com.github.srg13.votingsystem.util.ValidationUtil.checkNew;
 
 public abstract class AbstractUserController {
@@ -24,6 +25,12 @@ public abstract class AbstractUserController {
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
         return service.getByEmail(email);
+    }
+
+    public void update(User user, int id) {
+        log.info("update {} with id={}", user, id);
+        assureIdConsistent(user, id);
+        service.create(user);
     }
 
     public void delete(int id) {

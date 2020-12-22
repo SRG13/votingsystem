@@ -72,4 +72,17 @@ class ProfileControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(VOTES_JSON));
     }
+
+    @Test
+    void update() throws Exception {
+        User updated = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL)
+                .with(userHttpBasic(USER1))
+                .content(USER_JSON_UPDATED)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        assertThat(service.get(updated.getId())).usingRecursiveComparison().ignoringFields("password").isEqualTo(updated);
+
+    }
 }

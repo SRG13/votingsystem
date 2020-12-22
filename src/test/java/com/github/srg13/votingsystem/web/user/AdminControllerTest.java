@@ -86,4 +86,17 @@ class AdminControllerTest extends AbstractControllerTest {
 
         assertThat(service.get(result.getId())).usingRecursiveComparison().ignoringFields("password").isEqualTo(newUser);
     }
+
+    @Test
+    void update() throws Exception {
+        User updated = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + USER1_ID)
+                .with(userHttpBasic(ADMIN))
+                .content(USER_JSON_UPDATED)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        assertThat(service.get(updated.getId())).usingRecursiveComparison().ignoringFields("password").isEqualTo(updated);
+
+    }
 }

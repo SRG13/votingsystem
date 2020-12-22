@@ -29,6 +29,12 @@ public class ProfileController extends AbstractUserController {
         return super.get(authUser.getId());
     }
 
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private void update(@AuthenticationPrincipal AuthorizedUser authUser, @Valid @RequestBody User user) {
+        super.update(user, authUser.getId());
+    }
+
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthorizedUser authUser) {

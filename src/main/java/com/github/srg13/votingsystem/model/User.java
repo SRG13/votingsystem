@@ -11,6 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
@@ -35,7 +36,7 @@ public class User extends AbstractNamedEntity {
     private String password;
 
     @Column(name = "registered_time", nullable = false, columnDefinition = "timestamp default now()")
-    private LocalDateTime registered = LocalDateTime.now();
+    private LocalDateTime registered = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
     private boolean enabled = true;
