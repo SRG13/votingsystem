@@ -34,13 +34,14 @@ class VoteControllerTest extends AbstractControllerTest {
 
     @Test
     void create() throws Exception {
-        Vote newVote = new Vote();
+        ResultActions resultActions = perform(MockMvcRequestBuilders.post(REST_URL_2)
+                .with(userHttpBasic(USER2))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
 
-        perform(MockMvcRequestBuilders.post(REST_URL_2)
-                .content(asJsonString(newVote))
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(USER2)))
-                .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+        String json = resultActions.andReturn().getResponse().getContentAsString();
+        Vote result = readValue(json, Vote.class);
+
+        assertThat(repository.findById(result.getId()).get()).usingRecursiveComparison().ignoringFields("menu", "user").isEqualTo(result);
     }
 }
