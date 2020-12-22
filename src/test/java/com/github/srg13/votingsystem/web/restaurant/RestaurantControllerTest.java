@@ -11,7 +11,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.github.srg13.votingsystem.util.RestaurantTestData.*;
+import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
+import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANTS_JSON;
+import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT_JSON;
+import static com.github.srg13.votingsystem.util.RestaurantTestData.getNew;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.ADMIN;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1;

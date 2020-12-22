@@ -1,6 +1,5 @@
 package com.github.srg13.votingsystem;
 
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

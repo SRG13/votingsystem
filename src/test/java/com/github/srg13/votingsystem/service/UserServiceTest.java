@@ -14,7 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 
-import static com.github.srg13.votingsystem.util.UserTestData.*;
+import static com.github.srg13.votingsystem.util.UserTestData.USER1;
+import static com.github.srg13.votingsystem.util.UserTestData.USER1_ID;
+import static com.github.srg13.votingsystem.util.UserTestData.USERS;
+import static com.github.srg13.votingsystem.util.UserTestData.getNew;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

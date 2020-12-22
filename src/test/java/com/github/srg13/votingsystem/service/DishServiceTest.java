@@ -8,7 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import static com.github.srg13.votingsystem.util.DishTestData.*;
+import static com.github.srg13.votingsystem.util.DishTestData.DISH;
+import static com.github.srg13.votingsystem.util.DishTestData.DISH1_ID;
+import static com.github.srg13.votingsystem.util.DishTestData.DISHES;
+import static com.github.srg13.votingsystem.util.DishTestData.getNew;
 import static com.github.srg13.votingsystem.util.MenuTestData.OLD_MENU_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
