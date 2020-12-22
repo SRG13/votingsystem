@@ -8,20 +8,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
+import static com.github.srg13.votingsystem.util.UserUtil.prepareToSave;
+
 @Service
 public class UserService implements UserDetailsService {
 
-    private UserDao repository;
+    private final UserDao repository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserDao repository) {
+    public UserService(UserDao repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -53,11 +58,6 @@ public class UserService implements UserDetailsService {
     @Transactional
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
-        return repository.save(prepareToSave(user));
-    }
-
-    public static User prepareToSave(User user) {
-        user.setEmail(user.getEmail().toLowerCase());
-        return user;
+        return repository.save(prepareToSave(user, passwordEncoder));
     }
 }

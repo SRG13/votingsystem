@@ -11,9 +11,9 @@ FROM restaurants;
 ALTER SEQUENCE global_seq restart with 100000;
 
 INSERT INTO users (NAME, EMAIL, PASSWORD, REGISTERED_TIME)
-VALUES ('Petr', 'admin@yandex.ru', 'admin', '2020-01-30 12:00:44'),
-       ('Sergey', 'user@gmail.com', 'pass123', '2020-02-05 13:05:11'),
-       ('Anna', 'bar@gmail.com', 's3cr3t', '2020-02-19 09:13:42');
+VALUES ('Petr', 'admin@yandex.ru', '$2a$04$lNvJ9Awb4jI.JPpkZ3TvLuIPg3wTlwikdFdcVa3batRd2EVeQTHw.', '2020-01-30 12:00:44'),
+       ('Sergey', 'user@gmail.com', '$2a$04$4LFJd4AMSLkhaymXmU5CretLJikmALL2Soo1G3GuuTaEwYsPLB31K', '2020-02-05 13:05:11'),
+       ('Anna', 'bar@gmail.com', '$2a$04$nkSjFg99aXsysLFgu.UlSOVoiABJt472KVijWKm8TNbdDDtSQJ7uu', '2020-02-19 09:13:42');
 
 INSERT INTO restaurants (NAME)
 VALUES ('107 West'),
