@@ -1,9 +1,7 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
-import com.github.srg13.votingsystem.dao.DishDao;
-import com.github.srg13.votingsystem.dao.MenuDao;
-import com.github.srg13.votingsystem.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Dish;
+import com.github.srg13.votingsystem.service.DishService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +12,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-
-import static com.github.srg13.votingsystem.util.ValidationUtil.checkNew;
 
 @RestController
 @RequestMapping(DishController.REST_URL)
@@ -27,22 +24,18 @@ public class DishController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final DishDao dishRepository;
-
-    private final MenuDao menuRepository;
+    private final DishService dishService;
 
 
     @Autowired
-    public DishController(DishDao repository, MenuDao menuRepository) {
-        this.dishRepository = repository;
-        this.menuRepository = menuRepository;
+    public DishController(DishService dishService) {
+        this.dishService = dishService;
     }
 
     @GetMapping("/{id}")
     public Dish get(@PathVariable int id) {
         log.info("get {}", id);
-        return dishRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Dish with id=" + id + "not found."));
+        return dishService.get(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -50,23 +43,21 @@ public class DishController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
-        dishRepository.deleteById(id);
+        dishService.delete(id);
     }
 
     @GetMapping
     public List<Dish> getAll(@PathVariable int menuId) {
         log.info("getAll from menu {}", menuId);
-        return dishRepository.findAllByMenuId(menuId);
+        return dishService.getAll(menuId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> create(@RequestBody Dish dish, @PathVariable int menuId, @PathVariable int restaurantId) {
+    public ResponseEntity<Dish> create(@Valid @RequestBody Dish dish, @PathVariable int menuId, @PathVariable int restaurantId) {
         log.info("create {} for menu {} and restaurant {}", dish, menuId, restaurantId);
-        checkNew(dish);
 
-        dish.setMenu(menuRepository.getOne(menuId));
-        Dish created = dishRepository.save(dish);
+        Dish created = dishService.create(dish, menuId);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")

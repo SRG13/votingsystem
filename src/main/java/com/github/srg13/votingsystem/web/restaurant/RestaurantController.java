@@ -1,8 +1,7 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
-import com.github.srg13.votingsystem.dao.RestaurantDao;
-import com.github.srg13.votingsystem.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Restaurant;
+import com.github.srg13.votingsystem.service.RestaurantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static com.github.srg13.votingsystem.util.ValidationUtil.checkNew;
-
 @RestController
 @RequestMapping(value = RestaurantController.REST_URL)
 public class RestaurantController {
@@ -27,17 +24,17 @@ public class RestaurantController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final RestaurantDao repository;
+    private final RestaurantService service;
 
     @Autowired
-    public RestaurantController(RestaurantDao repository) {
-        this.repository = repository;
+    public RestaurantController(RestaurantService service) {
+        this.service = service;
     }
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Restaurant with id=" + id + "not found."));
+        log.info("get {}", id);
+        return service.get(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -45,22 +42,21 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
-        repository.deleteById(id);
+        service.delete(id);
     }
 
     @GetMapping
     public List<Restaurant> getAll() {
         log.info("getAll");
-        return repository.findAll();
+        return service.getAll();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> create(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
-        checkNew(restaurant);
 
-        Restaurant created = repository.save(restaurant);
+        Restaurant created = service.create(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId())
