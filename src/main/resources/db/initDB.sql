@@ -9,8 +9,9 @@ CREATE SEQUENCE global_seq START WITH 100000;
 
 CREATE TABLE restaurants
 (
-    id   INTEGER DEFAULT nextval('global_seq') PRIMARY KEY,
-    name VARCHAR UNIQUE NOT NULL
+    id          INTEGER DEFAULT nextval('global_seq') PRIMARY KEY,
+    name        VARCHAR UNIQUE NOT NULL,
+    description VARCHAR NOT NULL
 );
 
 CREATE TABLE users
