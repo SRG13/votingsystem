@@ -1,5 +1,6 @@
 package com.github.srg13.votingsystem.service;
 
+import com.github.srg13.votingsystem.dao.DishDao;
 import com.github.srg13.votingsystem.dao.MenuDao;
 import com.github.srg13.votingsystem.dao.RestaurantDao;
 import com.github.srg13.votingsystem.exception.IllegalRequestDataException;
@@ -21,14 +22,17 @@ public class MenuService {
 
     private final RestaurantDao restaurantRepository;
 
+    private final DishDao dishRepository;
+
     @Autowired
-    public MenuService(MenuDao repository, RestaurantDao restaurantRepository) {
+    public MenuService(MenuDao repository, RestaurantDao restaurantRepository, DishDao dishRepository) {
         this.repository = repository;
         this.restaurantRepository = restaurantRepository;
+        this.dishRepository = dishRepository;
     }
 
     public Menu get(int id) {
-        return repository.findById(id)
+        return repository.findByIdWithDishes(id)
                 .orElseThrow(() -> new NotFoundException("Menu with id=" + id + " not found."));
     }
 
@@ -45,9 +49,12 @@ public class MenuService {
     public Menu create(Menu menu, int restaurantId) {
         checkNew(menu);
         checkExistForThisDay(menu.getDate(), restaurantId);
-        menu.setRestaurant(restaurantRepository.getOne(restaurantId));
 
-        return repository.save(menu);
+        menu.setRestaurant(restaurantRepository.getOne(restaurantId));
+        Menu created = repository.save(menu);
+        dishRepository.saveAll(menu.getDishes());
+
+        return created;
     }
 
     private void checkExistForThisDay(LocalDate date, int restaurantId) {

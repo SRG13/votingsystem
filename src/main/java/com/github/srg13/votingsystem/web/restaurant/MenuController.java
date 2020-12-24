@@ -61,7 +61,7 @@ public class MenuController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Menu> create(@Valid @RequestBody Menu menu, @PathVariable int restaurantId) {
-        log.info("create {} for restaurant {}", menu, restaurantId);
+        log.info("create menu {} for restaurant {}, with {} dishes", menu, restaurantId, menu.getDishes().size());
         Menu created = service.create(menu, restaurantId);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
