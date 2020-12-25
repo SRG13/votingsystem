@@ -11,7 +11,8 @@ CREATE TABLE restaurants
 (
     id          INTEGER DEFAULT nextval('global_seq') PRIMARY KEY,
     name        VARCHAR UNIQUE NOT NULL,
-    description VARCHAR NOT NULL
+    description VARCHAR NOT NULL,
+    address     VARCHAR NOT NULL
 );
 
 CREATE TABLE users

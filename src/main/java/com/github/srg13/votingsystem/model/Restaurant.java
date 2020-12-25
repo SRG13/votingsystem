@@ -21,7 +21,11 @@ public class Restaurant extends AbstractNamedEntity {
     @NotNull
     private String description;
 
-    public Restaurant(Integer id, String name, String description) {
+    @Column(name = "address", nullable = false)
+    @NotNull
+    private String address;
+
+    public Restaurant(Integer id, String name, String description, String address) {
         super(id, name);
         this.description = description;
     }
@@ -32,6 +36,7 @@ public class Restaurant extends AbstractNamedEntity {
                 "id=" + id +
                 ", name=" + name +
                 ", description=" + description +
+                ", address=" + address +
                 '}';
     }
 }

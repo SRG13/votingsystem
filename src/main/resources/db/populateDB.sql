@@ -15,10 +15,10 @@ VALUES ('Petr', 'admin@yandex.ru', '$2a$04$lNvJ9Awb4jI.JPpkZ3TvLuIPg3wTlwikdFdcV
        ('Sergey', 'user@gmail.com', '$2a$04$4LFJd4AMSLkhaymXmU5CretLJikmALL2Soo1G3GuuTaEwYsPLB31K', '2020-02-05 13:05:11'),
        ('Anna', 'bar@gmail.com', '$2a$04$nkSjFg99aXsysLFgu.UlSOVoiABJt472KVijWKm8TNbdDDtSQJ7uu', '2020-02-19 09:13:42');
 
-INSERT INTO restaurants (NAME, DESCRIPTION)
-VALUES ('107 West', 'Traditional American food'),
-       ('11B EXPRESS', 'Pizza, Sushi, Cheeze'),
-       ('Cesario', 'Italian food');
+INSERT INTO restaurants (NAME, DESCRIPTION, ADDRESS)
+VALUES ('107 West', 'Traditional American food', '2787 Broadway Ave, New York'),
+       ('11B EXPRESS', 'Pizza, Sushi, Cheeze', '174 Ave B, New York'),
+       ('Cesario', 'Italian food', '601 Sutter St, San Francisco');
 
 INSERT INTO user_roles (user_id, role)
 VALUES (100000, 'ADMIN'),

@@ -11,12 +11,14 @@ import lombok.Setter;
 public class RestaurantTo extends AbstractNamedEntity {
 
     private String description;
+    private String address;
 
     private Menu menuOfDay;
 
     public RestaurantTo(Restaurant restaurant) {
         super(restaurant.getId(), restaurant.getName());
         this.description = restaurant.getDescription();
+        this.address = restaurant.getAddress();
     }
 
     @Override
@@ -25,6 +27,7 @@ public class RestaurantTo extends AbstractNamedEntity {
                 "id=" + id +
                 ", name=" + name +
                 ", description=" + description +
+                ", address=" + address +
                 '}';
     }
 }
