@@ -1,5 +1,6 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
+import com.github.srg13.votingsystem.dao.RestaurantDao;
 import com.github.srg13.votingsystem.dto.RestaurantTo;
 import com.github.srg13.votingsystem.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Restaurant;
@@ -27,6 +28,9 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Autowired
     private RestaurantService service;
+
+    @Autowired
+    private RestaurantDao repository;
 
     @Test
     void get() throws Exception {
@@ -88,6 +92,18 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(USER1)))
                 .andExpect(status().is4xxClientError());
-
     }
+
+    @Test
+    void update() throws Exception {
+        Restaurant updatedRestaurant = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT3_ID)
+                .content(writeValue(updatedRestaurant))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN)))
+                .andExpect(status().isNoContent());
+
+        assertThat(repository.findById(RESTAURANT3_ID).get()).usingRecursiveComparison().isEqualTo(updatedRestaurant);
+    }
+
 }

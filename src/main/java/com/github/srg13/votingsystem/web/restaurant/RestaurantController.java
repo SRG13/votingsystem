@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -43,6 +44,14 @@ public class RestaurantController {
     public RestaurantTo get(@PathVariable int id) {
         log.info("get {}", id);
         return service.get(id);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@RequestBody Restaurant restaurant, @PathVariable int id) {
+        log.info("update {} with id={}", restaurant, id);
+        service.update(restaurant, id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

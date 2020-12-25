@@ -31,4 +31,8 @@ public class RestaurantTestData {
     public static RestaurantTo getNewTo() {
         return new RestaurantTo(getNew());
     }
+
+    public static Restaurant getUpdated() {
+        return new Restaurant(RESTAURANT3_ID, "updatedName", "updatedFood", "updatedAddress");
+    }
 }

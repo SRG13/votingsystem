@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.github.srg13.votingsystem.util.ValidationUtil.assureIdConsistent;
 import static com.github.srg13.votingsystem.util.ValidationUtil.checkNew;
 
 @Service
@@ -30,6 +31,11 @@ public class RestaurantService {
                 .orElseThrow(() -> new NotFoundException("Restaurant with id=" + id + " not found."));
 
         return makeTO(restaurant);
+    }
+
+    public void update(Restaurant restaurant, int id) {
+        assureIdConsistent(restaurant, id);
+        restaurantRepository.save(restaurant);
     }
 
     public void delete(int id) {
