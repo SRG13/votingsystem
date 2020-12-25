@@ -40,9 +40,10 @@ public class RestaurantService {
         return restaurantRepository.findAll();
     }
 
-    public Restaurant create(Restaurant restaurant) {
+    public RestaurantTo create(Restaurant restaurant) {
         checkNew(restaurant);
-        return restaurantRepository.save(restaurant);
+        Restaurant created = restaurantRepository.save(restaurant);
+        return makeTO(created);
     }
 
     private RestaurantTo makeTO(Restaurant restaurant) {

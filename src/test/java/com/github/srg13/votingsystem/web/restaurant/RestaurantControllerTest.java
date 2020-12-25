@@ -1,5 +1,6 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
+import com.github.srg13.votingsystem.dto.RestaurantTo;
 import com.github.srg13.votingsystem.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Restaurant;
 import com.github.srg13.votingsystem.service.RestaurantService;
@@ -11,10 +12,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
-import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANTS_JSON;
-import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT_JSON;
-import static com.github.srg13.votingsystem.util.RestaurantTestData.getNew;
+import static com.github.srg13.votingsystem.util.RestaurantTestData.*;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.ADMIN;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1;
@@ -73,12 +71,13 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
 
         String json = resultActions.andReturn().getResponse().getContentAsString();
-        Restaurant result = readValue(json, Restaurant.class);
-        newRestaurant.setId(result.getId());
+        RestaurantTo result = readValue(json, RestaurantTo.class);
+        RestaurantTo newRestaurantTo = getNewTo();
+        newRestaurantTo.setId(result.getId());
 
-        assertThat(result).usingRecursiveComparison().isEqualTo(newRestaurant);
+        assertThat(result).usingRecursiveComparison().isEqualTo(newRestaurantTo);
 
-        assertThat(service.get(result.getId())).usingRecursiveComparison().isEqualTo(newRestaurant);
+        assertThat(service.get(result.getId())).usingRecursiveComparison().isEqualTo(newRestaurantTo);
     }
 
     @Test

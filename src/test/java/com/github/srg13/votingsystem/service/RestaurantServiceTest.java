@@ -1,17 +1,15 @@
 package com.github.srg13.votingsystem.service;
 
+import com.github.srg13.votingsystem.dto.RestaurantTo;
 import com.github.srg13.votingsystem.exception.NotFoundException;
-import com.github.srg13.votingsystem.model.Restaurant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT;
-import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
-import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANTS;
-import static com.github.srg13.votingsystem.util.RestaurantTestData.getNew;
+import static com.github.srg13.votingsystem.util.MenuTestData.OLD_MENU;
+import static com.github.srg13.votingsystem.util.RestaurantTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -24,8 +22,10 @@ class RestaurantServiceTest {
 
     @Test
     void get() {
-        Restaurant restaurant = service.get(RESTAURANT3_ID);
-        assertThat(restaurant).usingRecursiveComparison().isEqualTo(RESTAURANT);
+        RestaurantTo restaurantTo = service.get(RESTAURANT3_ID);
+
+        assertThat(restaurantTo).usingRecursiveComparison().ignoringFields("menuOfDay").isEqualTo(RESTAURANT_TO);
+        assertThat(restaurantTo.getMenuOfDay()).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(OLD_MENU);
     }
 
     @Test
@@ -46,16 +46,16 @@ class RestaurantServiceTest {
 
     @Test
     void create() {
-        Restaurant created = service.create(getNew());
+        RestaurantTo created = service.create(getNew());
         int newId = created.getId();
-        Restaurant newRestaurant = getNew();
-        newRestaurant.setId(newId);
+        RestaurantTo newRestaurantTo = getNewTo();
+        newRestaurantTo.setId(newId);
 
         assertThat(created)
-                .usingRecursiveComparison().isEqualTo(newRestaurant);
+                .usingRecursiveComparison().isEqualTo(newRestaurantTo);
 
         assertThat(service.get(newId))
-                .usingRecursiveComparison().isEqualTo(newRestaurant);
+                .usingRecursiveComparison().isEqualTo(newRestaurantTo);
 
     }
 }

@@ -28,6 +28,7 @@ public class Restaurant extends AbstractNamedEntity {
     public Restaurant(Integer id, String name, String description, String address) {
         super(id, name);
         this.description = description;
+        this.address = address;
     }
 
     @Override
