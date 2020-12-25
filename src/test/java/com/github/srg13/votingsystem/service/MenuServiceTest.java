@@ -10,6 +10,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
 import static com.github.srg13.votingsystem.util.MenuTestData.*;
+import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT1_ID;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,19 +24,19 @@ class MenuServiceTest {
 
     @Test
     void get() {
-        Menu menu = service.get(OLD_MENU_ID);
+        Menu menu = service.get(OLD_MENU_ID, RESTAURANT3_ID);
         assertThat(menu).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(OLD_MENU);
     }
 
     @Test
     void getNoExist() {
-        assertThrows(NotFoundException.class, () -> service.get(-1));
+        assertThrows(NotFoundException.class, () -> service.get(-1, RESTAURANT3_ID));
     }
 
     @Test
     void delete() {
         service.delete(MENU1_ID);
-        assertThrows(NotFoundException.class, () -> service.get(MENU1_ID));
+        assertThrows(NotFoundException.class, () -> service.get(MENU1_ID, RESTAURANT1_ID));
     }
 
     @Test
@@ -53,7 +54,7 @@ class MenuServiceTest {
         assertThat(created)
                 .usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(newMenu);
 
-        assertThat(service.get(newId))
+        assertThat(service.get(newId, RESTAURANT3_ID))
                 .usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(newMenu);
     }
 

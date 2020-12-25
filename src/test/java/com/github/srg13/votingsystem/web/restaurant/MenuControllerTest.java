@@ -45,7 +45,7 @@ class MenuControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
 
-        assertThrows(NotFoundException.class, () -> service.get(OLD_MENU_ID));
+        assertThrows(NotFoundException.class, () -> service.get(OLD_MENU_ID, RESTAURANT3_ID));
     }
 
     @Test
@@ -77,10 +77,9 @@ class MenuControllerTest extends AbstractControllerTest {
         Menu created = readValue(json, Menu.class);
         newMenu.setId(created.getId());
 
-        assertThat(created).usingRecursiveComparison().isEqualTo(newMenu);
+        assertThat(created).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(newMenu);
 
-        assertThat(service.get(created.getId())).usingRecursiveComparison().ignoringFields("restaurant").isEqualTo(newMenu);
-
+        assertThat(service.get(created.getId(), RESTAURANT3_ID)).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(newMenu);
     }
 
     @Test

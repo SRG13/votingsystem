@@ -18,47 +18,56 @@ import static com.github.srg13.votingsystem.util.ValidationUtil.checkNew;
 @Service
 public class MenuService {
 
-    private final MenuDao repository;
+    private final MenuDao menuRepository;
 
     private final RestaurantDao restaurantRepository;
 
     private final DishDao dishRepository;
 
     @Autowired
-    public MenuService(MenuDao repository, RestaurantDao restaurantRepository, DishDao dishRepository) {
-        this.repository = repository;
+    public MenuService(MenuDao menuRepository, RestaurantDao restaurantRepository, DishDao dishRepository) {
+        this.menuRepository = menuRepository;
         this.restaurantRepository = restaurantRepository;
         this.dishRepository = dishRepository;
     }
 
-    public Menu get(int id) {
-        return repository.findByIdWithDishes(id)
+    public Menu get(int id, int restaurantId) {
+        checkRestaurantExist(restaurantId);
+        return menuRepository.findByIdWithDishes(id)
                 .orElseThrow(() -> new NotFoundException("Menu with id=" + id + " not found."));
     }
 
     @Transactional
     public void delete(int id) {
-        repository.deleteById(id);
+        menuRepository.deleteById(id);
     }
 
     public List<Menu> getAll(int restaurantId) {
-        return repository.findAllByRestaurantId(restaurantId);
+        checkRestaurantExist(restaurantId);
+        return menuRepository.findAllByRestaurantId(restaurantId);
     }
 
     @Transactional
     public Menu create(Menu menu, int restaurantId) {
+        checkRestaurantExist(restaurantId);
         checkNew(menu);
         checkExistForThisDay(menu.getDate(), restaurantId);
 
         menu.setRestaurant(restaurantRepository.getOne(restaurantId));
-        Menu created = repository.save(menu);
+        Menu created = menuRepository.save(menu);
         dishRepository.saveAll(menu.getDishes());
 
         return created;
     }
 
+    private void checkRestaurantExist(int restaurantId) {
+        restaurantRepository.findById(restaurantId).orElseThrow(
+                () -> new NotFoundException("Restaurant with id=" + restaurantId + " not found.")
+        );
+    }
+
     private void checkExistForThisDay(LocalDate date, int restaurantId) {
-        if (repository.findByRestaurantIdAndDate(restaurantId, date).isPresent()) {
+        if (menuRepository.findByRestaurantIdAndDate(restaurantId, date).isPresent()) {
             throw new IllegalRequestDataException("Menu at " + date + " date already exist.");
         }
     }

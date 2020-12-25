@@ -39,9 +39,9 @@ public class MenuController {
     }
 
     @GetMapping("/{id}")
-    public Menu get(@PathVariable int id) {
+    public Menu get(@PathVariable int id, @PathVariable int restaurantId) {
         log.info("get {}", id);
-        return service.get(id);
+        return service.get(id, restaurantId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
