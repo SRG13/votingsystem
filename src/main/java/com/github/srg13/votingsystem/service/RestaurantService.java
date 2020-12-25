@@ -1,6 +1,8 @@
 package com.github.srg13.votingsystem.service;
 
+import com.github.srg13.votingsystem.dao.MenuDao;
 import com.github.srg13.votingsystem.dao.RestaurantDao;
+import com.github.srg13.votingsystem.dto.RestaurantTo;
 import com.github.srg13.votingsystem.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Restaurant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,29 +15,40 @@ import static com.github.srg13.votingsystem.util.ValidationUtil.checkNew;
 @Service
 public class RestaurantService {
 
-    private final RestaurantDao repository;
+    private final RestaurantDao restaurantRepository;
+
+    private final MenuDao menuRepository;
 
     @Autowired
-    public RestaurantService(RestaurantDao repository) {
-        this.repository = repository;
+    public RestaurantService(RestaurantDao restaurantRepository, MenuDao menuRepository) {
+        this.restaurantRepository = restaurantRepository;
+        this.menuRepository = menuRepository;
     }
 
-    public Restaurant get(int id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Restaurant with id=" + id + "not found."));
+    public RestaurantTo get(int id) {
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Restaurant with id=" + id + " not found."));
+
+        return makeTO(restaurant);
     }
 
     public void delete(int id) {
-        repository.deleteById(id);
+        restaurantRepository.deleteById(id);
     }
 
     public List<Restaurant> getAll() {
-        return repository.findAll();
+        return restaurantRepository.findAll();
     }
 
     public Restaurant create(Restaurant restaurant) {
         checkNew(restaurant);
-        return repository.save(restaurant);
+        return restaurantRepository.save(restaurant);
     }
 
+    private RestaurantTo makeTO(Restaurant restaurant) {
+        RestaurantTo rTo = new RestaurantTo(restaurant);
+        rTo.setMenuOfDay(menuRepository.findFirstByRestaurantIdOrderByDateDesc(restaurant.getId()));
+
+        return rTo;
+    }
 }

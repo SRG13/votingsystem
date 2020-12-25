@@ -1,5 +1,6 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
+import com.github.srg13.votingsystem.dto.RestaurantTo;
 import com.github.srg13.votingsystem.model.Restaurant;
 import com.github.srg13.votingsystem.service.RestaurantService;
 import org.slf4j.Logger;
@@ -9,7 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -32,7 +40,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
-    public Restaurant get(@PathVariable int id) {
+    public RestaurantTo get(@PathVariable int id) {
         log.info("get {}", id);
         return service.get(id);
     }

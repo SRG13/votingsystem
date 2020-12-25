@@ -19,4 +19,6 @@ public interface MenuDao extends JpaRepository<Menu, Integer> {
     Optional<Menu> findByRestaurantIdAndDate(int restaurantId, LocalDate date);
 
     List<Menu> findAllByRestaurantId(int restaurantId);
+
+    Menu findFirstByRestaurantIdOrderByDateDesc(int restaurantId);
 }
