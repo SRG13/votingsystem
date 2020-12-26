@@ -1,8 +1,11 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
+import com.github.srg13.votingsystem.AuthorizedUser;
 import com.github.srg13.votingsystem.dto.RestaurantTo;
 import com.github.srg13.votingsystem.model.Restaurant;
+import com.github.srg13.votingsystem.model.Vote;
 import com.github.srg13.votingsystem.service.RestaurantService;
+import com.github.srg13.votingsystem.service.VoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,17 +37,20 @@ public class RestaurantController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final RestaurantService service;
+    private final RestaurantService restaurantService;
+
+    private final VoteService voteService;
 
     @Autowired
-    public RestaurantController(RestaurantService service) {
-        this.service = service;
+    public RestaurantController(RestaurantService restaurantService, VoteService voteService) {
+        this.restaurantService = restaurantService;
+        this.voteService = voteService;
     }
 
     @GetMapping("/{id}")
     public RestaurantTo get(@PathVariable int id) {
         log.info("get {}", id);
-        return service.get(id);
+        return restaurantService.get(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -51,7 +58,7 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id={}", restaurant, id);
-        service.update(restaurant, id);
+        restaurantService.update(restaurant, id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -59,13 +66,13 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
-        service.delete(id);
+        restaurantService.delete(id);
     }
 
     @GetMapping
     public List<Restaurant> getAll() {
         log.info("getAll");
-        return service.getAll();
+        return restaurantService.getAll();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -73,10 +80,25 @@ public class RestaurantController {
     public ResponseEntity<RestaurantTo> create(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
 
-        RestaurantTo created = service.create(restaurant);
+        RestaurantTo created = restaurantService.create(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId())
+                .toUri();
+
+        return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping(value = "/{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthorizedUser authUser, @PathVariable int restaurantId) {
+        log.info("create vote for user {} and restaurant {}", authUser.getId(), restaurantId);
+
+        Vote created = voteService.create(new Vote(), authUser.getId(), restaurantId);
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL)
+                .buildAndExpand(restaurantId)
                 .toUri();
 
         return ResponseEntity.created(uriOfNewResource).body(created);

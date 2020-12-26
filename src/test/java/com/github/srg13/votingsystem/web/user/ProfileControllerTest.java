@@ -13,10 +13,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.*;
-import static com.github.srg13.votingsystem.util.VoteTestData.VOTES_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,16 +59,6 @@ class ProfileControllerTest extends AbstractControllerTest {
         assertThat(result).usingRecursiveComparison().ignoringFields("password").isEqualTo(newUser);
 
         assertThat(service.get(result.getId())).usingRecursiveComparison().ignoringFields("password").isEqualTo(newUser);
-    }
-
-    @Test
-    void getVotes() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "vote-history")
-                .with(userHttpBasic(USER2)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(VOTES_JSON));
     }
 
     @Test

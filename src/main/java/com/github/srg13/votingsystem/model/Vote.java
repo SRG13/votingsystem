@@ -28,8 +28,8 @@ public class Vote extends AbstractBaseEntity {
 
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    private Restaurant restaurant;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,11 +1,10 @@
 package com.github.srg13.votingsystem.service;
 
-import com.github.srg13.votingsystem.dao.MenuDao;
+import com.github.srg13.votingsystem.dao.RestaurantDao;
 import com.github.srg13.votingsystem.dao.UserDao;
 import com.github.srg13.votingsystem.dao.VoteDao;
 import com.github.srg13.votingsystem.exception.IllegalRequestDataException;
 import com.github.srg13.votingsystem.exception.NotFoundException;
-import com.github.srg13.votingsystem.model.Menu;
 import com.github.srg13.votingsystem.model.Vote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,48 +20,38 @@ public class VoteService {
 
     private final VoteDao voteRepository;
 
-    private final MenuDao menuRepository;
+    private final RestaurantDao restaurantRepository;
 
     private final UserDao userRepository;
 
     @Autowired
-    public VoteService(VoteDao voteRepository, MenuDao menuRepository, UserDao userRepository) {
+    public VoteService(VoteDao voteRepository, RestaurantDao restaurantRepository, UserDao userRepository) {
         this.voteRepository = voteRepository;
-        this.menuRepository = menuRepository;
+        this.restaurantRepository = restaurantRepository;
         this.userRepository = userRepository;
-    }
-
-    public Vote get(int userId, int menuId) {
-        return voteRepository.findByUserIdAndMenuId(userId, menuId)
-                .orElseThrow(() -> new IllegalRequestDataException
-                        ("Vote of user=" + userId + " for menu=" + menuId + " doesn't exist"));
     }
 
     public List<Vote> getAll(int userId) {
         return voteRepository.findByUserIdOrderByVoteDateTimeDesc(userId);
     }
 
-    public Vote create(Vote vote, int userId, int menuId) {
-        checkMenuDate(menuId);
+    public Vote create(Vote vote, int userId, int restaurantId) {
+        checkRestaurantExist(restaurantId);
         if (isVoted(userId)) {
             checkTimeForReVote(vote.getVoteDateTime().toLocalTime());
             vote.setId(voteRepository.findByUserIdAndDate(userId, LocalDate.now()).get().getId());
         }
 
-        vote.setMenu(menuRepository.getOne(menuId));
+        vote.setRestaurant(restaurantRepository.getOne(restaurantId));
         vote.setUser(userRepository.getOne(userId));
-
 
         return voteRepository.save(vote);
     }
 
-    private void checkMenuDate(int menuId) {
-        Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> new NotFoundException("Menu with id=" + menuId + " not found."));
-
-        if (!(menu.getDate().equals(LocalDate.now()))) {
-            throw new IllegalRequestDataException("Menu date is not equal to the current day");
-        }
+    private void checkRestaurantExist(int restaurantId) {
+        restaurantRepository.findById(restaurantId).orElseThrow(
+                () -> new NotFoundException("Restaurant with id=" + restaurantId + " not found.")
+        );
     }
 
     private void checkTimeForReVote(LocalTime voteTime) {
@@ -74,5 +63,4 @@ public class VoteService {
     private boolean isVoted(int userId) {
         return voteRepository.findByUserIdAndDate(userId, LocalDate.now()).isPresent();
     }
-
 }

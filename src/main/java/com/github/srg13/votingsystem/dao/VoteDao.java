@@ -10,8 +10,6 @@ import java.util.Optional;
 
 public interface VoteDao extends JpaRepository<Vote, Integer> {
 
-    Optional<Vote> findByUserIdAndMenuId(int userId, int menuId);
-
     List<Vote> findByUserIdOrderByVoteDateTimeDesc(int userId);
 
     @Query(value = "SELECT * FROM votes v WHERE v.user_id=:userId AND FORMATDATETIME(VOTE_DATE_TIME, 'yyyy-MM-dd')=:date",

@@ -57,10 +57,10 @@ CREATE TABLE dishes
 CREATE TABLE votes
 (
     id              INTEGER DEFAULT nextval('global_seq') PRIMARY KEY,
-    menu_id         INTEGER NOT NULL,
     user_id         INTEGER NOT NULL,
+    restaurant_id   INTEGER NOT NULL,
     vote_date_time  TIMESTAMP(0) DEFAULT now() NOT NULL,
     CONSTRAINT votes_unique_vote_date_user_id_idx UNIQUE (vote_date_time, user_id),
-    FOREIGN KEY (menu_id) REFERENCES menus (id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE
 );

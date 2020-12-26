@@ -17,6 +17,7 @@ import static com.github.srg13.votingsystem.util.RestaurantTestData.*;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.ADMIN;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1;
+import static com.github.srg13.votingsystem.util.UserTestData.USER2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -106,4 +107,18 @@ class RestaurantControllerTest extends AbstractControllerTest {
         assertThat(repository.findById(RESTAURANT3_ID).get()).usingRecursiveComparison().isEqualTo(updatedRestaurant);
     }
 
+    @Test
+    void vote() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT3_ID)
+                .with(userHttpBasic(USER2))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void voteNotAllowed() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT3_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
 }
