@@ -17,7 +17,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
+import static com.github.srg13.votingsystem.util.JsonUtil.writeValue;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.*;
+import static com.github.srg13.votingsystem.util.TestUtil.readFromResultActions;
+import static com.github.srg13.votingsystem.util.TestUtil.readListFromResultActions;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.ADMIN;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1;
@@ -73,7 +76,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
-        List<Restaurant> restaurants = readArrayFromResultActions(result, Restaurant.class);
+        List<Restaurant> restaurants = readListFromResultActions(result, Restaurant.class);
 
         assertThat(restaurants).usingRecursiveComparison().isEqualTo(RESTAURANTS);
     }

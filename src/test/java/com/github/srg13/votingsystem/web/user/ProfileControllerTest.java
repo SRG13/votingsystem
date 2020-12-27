@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static com.github.srg13.votingsystem.util.TestUtil.readFromResultActions;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
+import static com.github.srg13.votingsystem.util.TestUtil.readListFromResultActions;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.USER2;
 import static com.github.srg13.votingsystem.util.VoteTestData.VOTES_OF_USER2;
@@ -32,7 +33,7 @@ class VoteControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
-        List<Vote> votes = readArrayFromResultActions(result, Vote.class);
+        List<Vote> votes = readListFromResultActions(result, Vote.class);
 
         assertThat(votes).usingRecursiveComparison().ignoringFields("restaurant", "user")
                 .isEqualTo(VOTES_OF_USER2);

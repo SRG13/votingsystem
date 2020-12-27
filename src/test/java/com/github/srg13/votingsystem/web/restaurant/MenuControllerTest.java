@@ -14,11 +14,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static com.github.srg13.votingsystem.util.DishTestData.DISHES;
+import static com.github.srg13.votingsystem.util.JsonUtil.writeValue;
 import static com.github.srg13.votingsystem.util.MenuTestData.MENU;
 import static com.github.srg13.votingsystem.util.MenuTestData.MENUS_OF_RESTAURANT3;
 import static com.github.srg13.votingsystem.util.MenuTestData.MENU_ID;
 import static com.github.srg13.votingsystem.util.MenuTestData.getNew;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
+import static com.github.srg13.votingsystem.util.TestUtil.readFromResultActions;
+import static com.github.srg13.votingsystem.util.TestUtil.readListFromResultActions;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.ADMIN;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1;
@@ -68,7 +71,7 @@ class MenuControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
-        List<Menu> menus = readArrayFromResultActions(result, Menu.class);
+        List<Menu> menus = readListFromResultActions(result, Menu.class);
 
         assertThat(menus).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENUS_OF_RESTAURANT3);
     }

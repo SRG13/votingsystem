@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
+import static com.github.srg13.votingsystem.util.TestUtil.readFromResultActions;
+import static com.github.srg13.votingsystem.util.TestUtil.readListFromResultActions;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,7 +77,7 @@ class AdminControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
-        List<User> users = readArrayFromResultActions(result, User.class);
+        List<User> users = readListFromResultActions(result, User.class);
 
         assertThat(users).usingElementComparatorIgnoringFields("password").isEqualTo(USERS);
     }
