@@ -9,8 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import static com.github.srg13.votingsystem.util.MenuTestData.*;
-import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT1_ID;
+import static com.github.srg13.votingsystem.util.DishTestData.DISHES;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENUS_OF_RESTAURANT3;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU_ID;
+import static com.github.srg13.votingsystem.util.MenuTestData.getNew;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,8 +27,10 @@ class MenuServiceTest {
 
     @Test
     void get() {
-        Menu menu = service.get(OLD_MENU_ID, RESTAURANT3_ID);
-        assertThat(menu).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(OLD_MENU);
+        Menu menu = service.get(MENU_ID, RESTAURANT3_ID);
+
+        assertThat(menu).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENU);
+        assertThat(menu.getDishes()).usingElementComparatorIgnoringFields("menu").isEqualTo(DISHES);
     }
 
     @Test
@@ -35,13 +40,13 @@ class MenuServiceTest {
 
     @Test
     void delete() {
-        service.delete(MENU1_ID);
-        assertThrows(NotFoundException.class, () -> service.get(MENU1_ID, RESTAURANT1_ID));
+        service.delete(MENU_ID);
+        assertThrows(NotFoundException.class, () -> service.get(MENU_ID, RESTAURANT3_ID));
     }
 
     @Test
     void getAll() {
-        assertThat(service.getAll(RESTAURANT3_ID)).usingElementComparatorIgnoringFields("restaurant", "dishes").isEqualTo(MENUS);
+        assertThat(service.getAll(RESTAURANT3_ID)).usingElementComparatorIgnoringFields("restaurant", "dishes").isEqualTo(MENUS_OF_RESTAURANT3);
     }
 
     @Test

@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import static com.github.srg13.votingsystem.util.MenuTestData.OLD_MENU;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,8 +24,8 @@ class RestaurantServiceTest {
     void get() {
         RestaurantTo restaurantTo = service.get(RESTAURANT3_ID);
 
-        assertThat(restaurantTo).usingRecursiveComparison().ignoringFields("menuOfDay").isEqualTo(RESTAURANT_TO);
-        assertThat(restaurantTo.getMenuOfDay()).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(OLD_MENU);
+        assertThat(restaurantTo).usingRecursiveComparison().ignoringFields("menuOfDay").isEqualTo(RESTAURANT3_TO);
+        assertThat(restaurantTo.getMenuOfDay()).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENU);
     }
 
     @Test

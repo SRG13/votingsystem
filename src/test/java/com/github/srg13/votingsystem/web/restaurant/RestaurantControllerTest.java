@@ -1,9 +1,11 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
 import com.github.srg13.votingsystem.dao.RestaurantDao;
+import com.github.srg13.votingsystem.dao.VoteDao;
 import com.github.srg13.votingsystem.dto.RestaurantTo;
 import com.github.srg13.votingsystem.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Restaurant;
+import com.github.srg13.votingsystem.model.Vote;
 import com.github.srg13.votingsystem.service.RestaurantService;
 import com.github.srg13.votingsystem.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.List;
 
 import static com.github.srg13.votingsystem.util.RestaurantTestData.*;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
@@ -28,17 +32,23 @@ class RestaurantControllerTest extends AbstractControllerTest {
     public static final String REST_URL = RestaurantController.REST_URL + "/";
 
     @Autowired
-    private RestaurantService service;
+    private RestaurantService restaurantService;
 
     @Autowired
-    private RestaurantDao repository;
+    private RestaurantDao restaurantRepository;
+
+    @Autowired
+    private VoteDao voteRepository;
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT3_ID))
+        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT3_ID))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(RESTAURANT_JSON));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        RestaurantTo restaurantTo = readFromResultActions(result, RestaurantTo.class);
+
+        assertThat(restaurantTo).usingRecursiveComparison().ignoringFields("menuOfDay").isEqualTo(RESTAURANT3_TO);
     }
 
     @Test
@@ -47,7 +57,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
 
-        assertThrows(NotFoundException.class, () -> service.get(RESTAURANT3_ID));
+        assertThrows(NotFoundException.class, () -> restaurantService.get(RESTAURANT3_ID));
     }
 
     @Test
@@ -59,30 +69,32 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL))
+        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(RESTAURANTS_JSON));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        List<Restaurant> restaurants = readArrayFromResultActions(result, Restaurant.class);
+
+        assertThat(restaurants).usingRecursiveComparison().isEqualTo(RESTAURANTS);
     }
 
     @Test
     void create() throws Exception {
         Restaurant newRestaurant = getNew();
-        ResultActions resultActions = perform(MockMvcRequestBuilders.post(REST_URL)
+        ResultActions result = perform(MockMvcRequestBuilders.post(REST_URL)
                 .content(writeValue(newRestaurant))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
 
-        String json = resultActions.andReturn().getResponse().getContentAsString();
-        RestaurantTo result = readValue(json, RestaurantTo.class);
+        RestaurantTo restaurantTo = readFromResultActions(result, RestaurantTo.class);
         RestaurantTo newRestaurantTo = getNewTo();
-        newRestaurantTo.setId(result.getId());
+        newRestaurantTo.setId(restaurantTo.getId());
 
         assertThat(result).usingRecursiveComparison().isEqualTo(newRestaurantTo);
 
-        assertThat(service.get(result.getId())).usingRecursiveComparison().isEqualTo(newRestaurantTo);
+        assertThat(restaurantService.get(restaurantTo.getId())).usingRecursiveComparison().isEqualTo(newRestaurantTo);
     }
 
     @Test
@@ -104,15 +116,20 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
 
-        assertThat(repository.findById(RESTAURANT3_ID).get()).usingRecursiveComparison().isEqualTo(updatedRestaurant);
+        assertThat(restaurantRepository.findById(RESTAURANT3_ID).get()).usingRecursiveComparison().isEqualTo(updatedRestaurant);
     }
 
     @Test
     void vote() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT3_ID)
+        ResultActions result = perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT3_ID)
                 .with(userHttpBasic(USER2))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+
+        Vote vote = readFromResultActions(result, Vote.class);
+
+        assertThat(voteRepository.findById(vote.getId()).get()).usingRecursiveComparison()
+                .ignoringFields("restaurant", "user").isEqualTo(vote);
     }
 
     @Test

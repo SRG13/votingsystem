@@ -11,9 +11,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.github.srg13.votingsystem.util.MenuTestData.MENUS_JSON;
-import static com.github.srg13.votingsystem.util.MenuTestData.OLD_MENU_ID;
-import static com.github.srg13.votingsystem.util.MenuTestData.OLD_MENU_JSON;
+import java.util.List;
+
+import static com.github.srg13.votingsystem.util.DishTestData.DISHES;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENUS_OF_RESTAURANT3;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU_ID;
 import static com.github.srg13.votingsystem.util.MenuTestData.getNew;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
@@ -33,48 +36,54 @@ class MenuControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + OLD_MENU_ID))
+        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL + MENU_ID))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(OLD_MENU_JSON));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        Menu menu = readFromResultActions(result, Menu.class);
+
+        assertThat(menu).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENU);
+        assertThat(menu.getDishes()).usingElementComparatorIgnoringFields("menu").isEqualTo(DISHES);
     }
 
     @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + OLD_MENU_ID)
+        perform(MockMvcRequestBuilders.delete(REST_URL + MENU_ID)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
 
-        assertThrows(NotFoundException.class, () -> service.get(OLD_MENU_ID, RESTAURANT3_ID));
+        assertThrows(NotFoundException.class, () -> service.get(MENU_ID, RESTAURANT3_ID));
     }
 
     @Test
     void deleteNotAllowed() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + OLD_MENU_ID)
+        perform(MockMvcRequestBuilders.delete(REST_URL + MENU_ID)
                 .with(userHttpBasic(USER1)))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL))
+        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(MENUS_JSON));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        List<Menu> menus = readArrayFromResultActions(result, Menu.class);
+
+        assertThat(menus).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENUS_OF_RESTAURANT3);
     }
 
     @Test
     void create() throws Exception {
         Menu newMenu = getNew();
-        ResultActions resultActions = perform(MockMvcRequestBuilders.post(REST_URL)
+        ResultActions result = perform(MockMvcRequestBuilders.post(REST_URL)
                 .content(writeValue(newMenu))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
 
-        String json = resultActions.andReturn().getResponse().getContentAsString();
-        Menu created = readValue(json, Menu.class);
+        Menu created = readFromResultActions(result, Menu.class);
         newMenu.setId(created.getId());
 
         assertThat(created).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(newMenu);
