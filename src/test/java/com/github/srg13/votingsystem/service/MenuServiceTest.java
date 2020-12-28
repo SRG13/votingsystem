@@ -14,6 +14,7 @@ import static com.github.srg13.votingsystem.util.MenuTestData.MENU;
 import static com.github.srg13.votingsystem.util.MenuTestData.MENUS_OF_RESTAURANT3;
 import static com.github.srg13.votingsystem.util.MenuTestData.MENU_ID;
 import static com.github.srg13.votingsystem.util.MenuTestData.getNew;
+import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT2_ID;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,14 +35,24 @@ class MenuServiceTest {
     }
 
     @Test
-    void getNoExist() {
+    void getNotOwnMenu() {
+        assertThrows(NotFoundException.class, () -> service.get(MENU_ID, RESTAURANT2_ID));
+    }
+
+    @Test
+    void getNotExist() {
         assertThrows(NotFoundException.class, () -> service.get(-1, RESTAURANT3_ID));
     }
 
     @Test
     void delete() {
-        service.delete(MENU_ID);
+        service.delete(MENU_ID, RESTAURANT3_ID);
         assertThrows(NotFoundException.class, () -> service.get(MENU_ID, RESTAURANT3_ID));
+    }
+
+    @Test
+    void deleteNotOwnMenu() {
+        assertThrows(IllegalRequestDataException.class, () -> service.delete(MENU_ID, RESTAURANT2_ID));
     }
 
     @Test
@@ -67,5 +78,10 @@ class MenuServiceTest {
     void createTwiceOnSameDay() {
         service.create(getNew(), RESTAURANT3_ID);
         assertThrows(IllegalRequestDataException.class, () -> service.create(getNew(), RESTAURANT3_ID));
+    }
+
+    @Test
+    void createForNotExistRestaurant() {
+        assertThrows(NotFoundException.class, () -> service.create(getNew(), -1));
     }
 }

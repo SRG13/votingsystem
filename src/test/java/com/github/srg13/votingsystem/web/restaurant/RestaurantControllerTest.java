@@ -114,12 +114,22 @@ class RestaurantControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         Restaurant updatedRestaurant = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT3_ID)
-                .content(writeValue(updatedRestaurant))
+                .content(writeValue(getUpdated()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
 
         assertThat(restaurantRepository.findById(RESTAURANT3_ID).get()).usingRecursiveComparison().isEqualTo(updatedRestaurant);
+    }
+
+    @Test
+    void updateNotAllowed() throws Exception {
+        Restaurant updatedRestaurant = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT3_ID)
+                .content(writeValue(updatedRestaurant))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(USER1)))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -139,6 +149,6 @@ class RestaurantControllerTest extends AbstractControllerTest {
     void voteNotAllowed() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT3_ID)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isUnauthorized());
     }
 }

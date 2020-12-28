@@ -38,4 +38,10 @@ class VoteControllerTest extends AbstractControllerTest {
         assertThat(votes).usingRecursiveComparison().ignoringFields("restaurant", "user")
                 .isEqualTo(VOTES_OF_USER2);
     }
+
+    @Test
+    void getNotAllowed() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
+                .andExpect(status().isUnauthorized());
+    }
 }
