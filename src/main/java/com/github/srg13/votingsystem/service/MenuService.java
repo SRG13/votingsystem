@@ -32,25 +32,24 @@ public class MenuService {
     }
 
     public Menu get(int id, int restaurantId) {
-        checkRestaurantExist(restaurantId);
-        return menuRepository.findByIdWithDishes(id)
-                .orElseThrow(() -> new NotFoundException("Menu with id=" + id + " not found."));
+        return menuRepository.findByIdAndRestaurantIdWithDishes(id, restaurantId)
+                .orElseThrow(() -> new NotFoundException("Menu with id=" + id + " for restaurant=" + restaurantId + " not found."));
     }
 
     @Transactional
-    public void delete(int id) {
+    public void delete(int id, int restaurantId) {
+        checkMenuForRestaurantExist(id, restaurantId);
         menuRepository.deleteById(id);
     }
 
     public List<Menu> getAll(int restaurantId) {
-        checkRestaurantExist(restaurantId);
         return menuRepository.findAllByRestaurantId(restaurantId);
     }
 
     @Transactional
     public Menu create(Menu menu, int restaurantId) {
-        checkRestaurantExist(restaurantId);
         checkNew(menu);
+        checkRestaurantExist(restaurantId);
         checkExistForThisDay(menu.getDate(), restaurantId);
 
         menu.setRestaurant(restaurantRepository.getOne(restaurantId));
@@ -58,6 +57,11 @@ public class MenuService {
         dishRepository.saveAll(menu.getDishes());
 
         return created;
+    }
+
+    private void checkMenuForRestaurantExist(int id, int restaurantId) {
+        menuRepository.findByIdAndRestaurantId(id, restaurantId).orElseThrow(
+                () -> new IllegalRequestDataException("Menu=" + id + " for Restaurant=" + restaurantId + "not exist."));
     }
 
     private void checkRestaurantExist(int restaurantId) {

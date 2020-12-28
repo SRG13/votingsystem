@@ -39,8 +39,9 @@ public class Dish extends AbstractNamedEntity {
     @Digits(integer = 4, fraction = 2)
     private BigDecimal price;
 
-    public Dish(Integer id, String name, @NotNull @DecimalMin(value = "0.0") @Digits(integer = 4, fraction = 2) BigDecimal price) {
+    public Dish(Integer id, String name, Menu menu, @NotNull @DecimalMin(value = "0.0") @Digits(integer = 4, fraction = 2) BigDecimal price) {
         super(id, name);
+        this.menu = menu;
         this.price = price;
     }
 

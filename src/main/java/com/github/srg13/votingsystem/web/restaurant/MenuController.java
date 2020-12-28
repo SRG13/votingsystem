@@ -47,9 +47,9 @@ public class MenuController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
-        log.info("delete {}", id);
-        service.delete(id);
+    public void delete(@PathVariable int id, @PathVariable int restaurantId) {
+        log.info("delete {} for restaurant {}", id, restaurantId);
+        service.delete(id, restaurantId);
     }
 
     @GetMapping
