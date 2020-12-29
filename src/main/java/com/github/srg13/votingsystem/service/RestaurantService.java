@@ -3,7 +3,7 @@ package com.github.srg13.votingsystem.service;
 import com.github.srg13.votingsystem.dao.MenuDao;
 import com.github.srg13.votingsystem.dao.RestaurantDao;
 import com.github.srg13.votingsystem.dto.RestaurantTo;
-import com.github.srg13.votingsystem.exception.NotFoundException;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Restaurant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

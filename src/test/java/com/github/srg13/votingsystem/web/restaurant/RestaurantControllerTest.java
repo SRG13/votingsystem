@@ -3,7 +3,7 @@ package com.github.srg13.votingsystem.web.restaurant;
 import com.github.srg13.votingsystem.dao.RestaurantDao;
 import com.github.srg13.votingsystem.dao.VoteDao;
 import com.github.srg13.votingsystem.dto.RestaurantTo;
-import com.github.srg13.votingsystem.exception.NotFoundException;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Restaurant;
 import com.github.srg13.votingsystem.model.Vote;
 import com.github.srg13.votingsystem.service.RestaurantService;

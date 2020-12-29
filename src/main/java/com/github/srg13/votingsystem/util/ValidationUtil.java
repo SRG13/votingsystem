@@ -1,7 +1,7 @@
 package com.github.srg13.votingsystem.util;
 
 import com.github.srg13.votingsystem.HasId;
-import com.github.srg13.votingsystem.exception.IllegalRequestDataException;
+import com.github.srg13.votingsystem.util.exception.IllegalRequestDataException;
 
 public class ValidationUtil {
 

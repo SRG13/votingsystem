@@ -88,19 +88,4 @@ public class RestaurantController {
 
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
-
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping(value = "/{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthorizedUser authUser, @PathVariable int restaurantId) {
-        log.info("create vote for user {} and restaurant {}", authUser.getId(), restaurantId);
-
-        Vote created = voteService.create(new Vote(), authUser.getId(), restaurantId);
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL)
-                .buildAndExpand(restaurantId)
-                .toUri();
-
-        return ResponseEntity.created(uriOfNewResource).body(created);
-    }
 }

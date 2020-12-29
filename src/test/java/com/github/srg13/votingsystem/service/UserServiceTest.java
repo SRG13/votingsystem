@@ -1,6 +1,6 @@
 package com.github.srg13.votingsystem.service;
 
-import com.github.srg13.votingsystem.exception.NotFoundException;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Role;
 import com.github.srg13.votingsystem.model.User;
 import org.junit.jupiter.api.Test;

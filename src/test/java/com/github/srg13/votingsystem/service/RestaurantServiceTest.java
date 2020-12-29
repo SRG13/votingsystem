@@ -1,7 +1,7 @@
 package com.github.srg13.votingsystem.service;
 
 import com.github.srg13.votingsystem.dto.RestaurantTo;
-import com.github.srg13.votingsystem.exception.NotFoundException;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

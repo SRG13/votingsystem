@@ -1,4 +1,4 @@
-package com.github.srg13.votingsystem.exception;
+package com.github.srg13.votingsystem.util.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

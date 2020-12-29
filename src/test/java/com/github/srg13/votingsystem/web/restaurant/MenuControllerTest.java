@@ -1,6 +1,6 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
-import com.github.srg13.votingsystem.exception.NotFoundException;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Menu;
 import com.github.srg13.votingsystem.service.MenuService;
 import com.github.srg13.votingsystem.web.AbstractControllerTest;
