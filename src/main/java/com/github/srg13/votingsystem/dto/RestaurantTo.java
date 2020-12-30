@@ -25,11 +25,8 @@ public class RestaurantTo extends AbstractBaseTo {
         this.menuOfDay = menuOfDay;
     }
 
-    public RestaurantTo(Restaurant restaurant) {
-        super(restaurant.getId());
-        this.name = restaurant.getName();
-        this.description = restaurant.getDescription();
-        this.address = restaurant.getAddress();
+    public RestaurantTo(Restaurant restaurant, Menu menuOfDay) {
+        this(restaurant.getId(), restaurant.getName(), restaurant.getDescription(), restaurant.getAddress(), menuOfDay);
     }
 
     @Override

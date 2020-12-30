@@ -3,11 +3,12 @@ package com.github.srg13.votingsystem.service;
 import com.github.srg13.votingsystem.dao.MenuDao;
 import com.github.srg13.votingsystem.dao.RestaurantDao;
 import com.github.srg13.votingsystem.dto.RestaurantTo;
-import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Restaurant;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.github.srg13.votingsystem.util.ValidationUtil.assureIdConsistent;
@@ -53,9 +54,7 @@ public class RestaurantService {
     }
 
     private RestaurantTo makeTO(Restaurant restaurant) {
-        RestaurantTo rTo = new RestaurantTo(restaurant);
-        rTo.setMenuOfDay(menuRepository.findFirstByRestaurantIdOrderByDateDesc(restaurant.getId()));
-
-        return rTo;
+        return new RestaurantTo(restaurant,
+                menuRepository.findByRestaurantIdAndDate(restaurant.getId(), LocalDate.now()).orElse(null));
     }
 }

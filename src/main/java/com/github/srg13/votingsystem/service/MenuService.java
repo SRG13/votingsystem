@@ -3,9 +3,9 @@ package com.github.srg13.votingsystem.service;
 import com.github.srg13.votingsystem.dao.DishDao;
 import com.github.srg13.votingsystem.dao.MenuDao;
 import com.github.srg13.votingsystem.dao.RestaurantDao;
+import com.github.srg13.votingsystem.model.Menu;
 import com.github.srg13.votingsystem.util.exception.IllegalRequestDataException;
 import com.github.srg13.votingsystem.util.exception.NotFoundException;
-import com.github.srg13.votingsystem.model.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,18 +60,19 @@ public class MenuService {
     }
 
     private void checkMenuForRestaurantExist(int id, int restaurantId) {
-        menuRepository.findByIdAndRestaurantId(id, restaurantId).orElseThrow(
-                () -> new IllegalRequestDataException("Menu=" + id + " for Restaurant=" + restaurantId + "not exist."));
+        if (!menuRepository.existsByIdAndRestaurantId(id, restaurantId)) {
+            throw new IllegalRequestDataException("Menu=" + id + " for Restaurant=" + restaurantId + "not exist.");
+        }
     }
 
     private void checkRestaurantExist(int restaurantId) {
-        restaurantRepository.findById(restaurantId).orElseThrow(
-                () -> new NotFoundException("Restaurant with id=" + restaurantId + " not found.")
-        );
+        if (!restaurantRepository.existsById(restaurantId)) {
+            throw new NotFoundException("Restaurant with id=" + restaurantId + " not found.");
+        }
     }
 
     private void checkExistForThisDay(LocalDate date, int restaurantId) {
-        if (menuRepository.findByRestaurantIdAndDate(restaurantId, date).isPresent()) {
+        if (menuRepository.existsByRestaurantIdAndDate(restaurantId, date)) {
             throw new IllegalRequestDataException("Menu at " + date + " date already exist.");
         }
     }
