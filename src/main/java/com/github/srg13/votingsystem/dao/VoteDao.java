@@ -12,8 +12,7 @@ public interface VoteDao extends JpaRepository<Vote, Integer> {
 
     List<Vote> findByUserIdOrderByVoteDateTimeDesc(int userId);
 
-    @Query(value = "SELECT * FROM votes v WHERE v.user_id=:userId AND FORMATDATETIME(VOTE_DATE_TIME, 'yyyy-MM-dd')=:date",
+    @Query(value = "SELECT v.id FROM votes v WHERE v.user_id=:userId AND FORMATDATETIME(VOTE_DATE_TIME, 'yyyy-MM-dd')=:date",
             nativeQuery = true)
-    Optional<Vote> findByUserIdAndDate(int userId, LocalDate date);
-
+    Integer findIdByUserIdAndDate(int userId, LocalDate date);
 }

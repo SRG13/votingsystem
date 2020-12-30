@@ -1,8 +1,10 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
-import com.github.srg13.votingsystem.util.exception.NotFoundException;
+import com.github.srg13.votingsystem.dao.VoteDao;
 import com.github.srg13.votingsystem.model.Menu;
+import com.github.srg13.votingsystem.model.Vote;
 import com.github.srg13.votingsystem.service.MenuService;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,14 @@ import static com.github.srg13.votingsystem.util.MenuTestData.MENU;
 import static com.github.srg13.votingsystem.util.MenuTestData.MENUS_OF_RESTAURANT3;
 import static com.github.srg13.votingsystem.util.MenuTestData.MENU_ID;
 import static com.github.srg13.votingsystem.util.MenuTestData.getNew;
+import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT2_ID;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
 import static com.github.srg13.votingsystem.util.TestUtil.readFromResultActions;
 import static com.github.srg13.votingsystem.util.TestUtil.readListFromResultActions;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.ADMIN;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1;
+import static com.github.srg13.votingsystem.util.UserTestData.USER2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -36,6 +40,9 @@ class MenuControllerTest extends AbstractControllerTest {
 
     @Autowired
     private MenuService service;
+
+    @Autowired
+    private VoteDao voteRepository;
 
     @Test
     void get() throws Exception {
@@ -102,5 +109,25 @@ class MenuControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(USER1)))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void vote() throws Exception {
+        ResultActions result = perform(MockMvcRequestBuilders.post("/restaurants/" + RESTAURANT2_ID + "/menus/100014")
+                .with(userHttpBasic(USER2))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        Vote vote = readFromResultActions(result, Vote.class);
+
+        assertThat(voteRepository.findById(vote.getId()).get()).usingRecursiveComparison()
+                .ignoringFields("menu", "user").isEqualTo(vote);
+    }
+
+    @Test
+    void voteNotAllowed() throws Exception {
+        perform(MockMvcRequestBuilders.post("/restaurants/" + RESTAURANT3_ID + "/menus/100014")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 }

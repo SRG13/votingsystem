@@ -29,7 +29,7 @@ public class VoteController {
     }
 
     @GetMapping
-    public List<Vote> get(@AuthenticationPrincipal AuthorizedUser authUser) {
+    public List<Vote> getAll(@AuthenticationPrincipal AuthorizedUser authUser) {
         log.info("get all votes for user {}", authUser.getId());
         return service.getAll(authUser.getId());
     }

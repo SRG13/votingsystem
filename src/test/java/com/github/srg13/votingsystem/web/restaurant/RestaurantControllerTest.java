@@ -40,9 +40,6 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Autowired
     private RestaurantDao restaurantRepository;
 
-    @Autowired
-    private VoteDao voteRepository;
-
     @Test
     void get() throws Exception {
         ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT3_ID))
@@ -130,25 +127,5 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(USER1)))
                 .andExpect(status().is4xxClientError());
-    }
-
-    @Test
-    void vote() throws Exception {
-        ResultActions result = perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT3_ID)
-                .with(userHttpBasic(USER2))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-
-        Vote vote = readFromResultActions(result, Vote.class);
-
-        assertThat(voteRepository.findById(vote.getId()).get()).usingRecursiveComparison()
-                .ignoringFields("restaurant", "user").isEqualTo(vote);
-    }
-
-    @Test
-    void voteNotAllowed() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT3_ID)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
     }
 }

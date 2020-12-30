@@ -1,11 +1,8 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
-import com.github.srg13.votingsystem.AuthorizedUser;
 import com.github.srg13.votingsystem.dto.RestaurantTo;
 import com.github.srg13.votingsystem.model.Restaurant;
-import com.github.srg13.votingsystem.model.Vote;
 import com.github.srg13.votingsystem.service.RestaurantService;
-import com.github.srg13.votingsystem.service.VoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,12 +35,9 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    private final VoteService voteService;
-
     @Autowired
-    public RestaurantController(RestaurantService restaurantService, VoteService voteService) {
+    public RestaurantController(RestaurantService restaurantService) {
         this.restaurantService = restaurantService;
-        this.voteService = voteService;
     }
 
     @GetMapping("/{id}")

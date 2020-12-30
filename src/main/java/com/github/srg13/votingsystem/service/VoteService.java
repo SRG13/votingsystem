@@ -1,12 +1,10 @@
 package com.github.srg13.votingsystem.service;
 
 import com.github.srg13.votingsystem.dao.MenuDao;
-import com.github.srg13.votingsystem.dao.RestaurantDao;
 import com.github.srg13.votingsystem.dao.UserDao;
 import com.github.srg13.votingsystem.dao.VoteDao;
-import com.github.srg13.votingsystem.util.exception.IllegalRequestDataException;
-import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Vote;
+import com.github.srg13.votingsystem.util.exception.IllegalRequestDataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,35 +35,29 @@ public class VoteService {
     }
 
     public Vote create(Vote vote, int userId, int menuId) {
-        checkRestaurantExist(menuId);
-        if (isVoted(userId)) {
+        checkMenuExist(menuId, vote.getVoteDateTime().toLocalDate());
+
+        Integer voteId = voteRepository.findIdByUserIdAndDate(userId, vote.getVoteDateTime().toLocalDate());
+        if (voteId != null) {
             checkTimeForReVote(vote.getVoteDateTime().toLocalTime());
-            vote.setId(voteRepository.findByUserIdAndDate(userId, LocalDate.now()).get().getId());
+            vote.setId(voteId);
         }
 
-        vote.setRestaurant(restaurantRepository.getOne(menuId));
+        vote.setMenu(menuRepository.getOne(menuId));
         vote.setUser(userRepository.getOne(userId));
 
         return voteRepository.save(vote);
     }
 
-//    private void checkRestaurantExist(int restaurantId) {
-//        restaurantRepository.findById(restaurantId).orElseThrow(
-//                () -> new NotFoundException("Restaurant with id=" + restaurantId + " not found.")
-//        );
-//    }
-
-    private void checkMenu(int menuId) {
-        menuRepository.findByIdAndDate();
+    private void checkMenuExist(int menuId, LocalDate date) {
+        if (!menuRepository.existsByIdAndDate(menuId, date)) {
+            throw new IllegalRequestDataException("Menu with id =" + menuId + " is not relevant.");
+        }
     }
 
     private void checkTimeForReVote(LocalTime voteTime) {
         if (voteTime.isAfter(TIME_THRESHOLD)) {
-            throw new IllegalRequestDataException("Too late to change your vote.");
+            throw new IllegalRequestDataException("Too late to change vote.");
         }
-    }
-
-    private boolean isVoted(int userId) {
-        return voteRepository.findByUserIdAndDate(userId, LocalDate.now()).isPresent();
     }
 }

@@ -1,8 +1,7 @@
-package com.github.srg13.votingsystem.web.restaurant;
+package com.github.srg13.votingsystem.web;
 
 import com.github.srg13.votingsystem.dao.VoteDao;
 import com.github.srg13.votingsystem.model.Vote;
-import com.github.srg13.votingsystem.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -35,7 +34,7 @@ class VoteControllerTest extends AbstractControllerTest {
 
         List<Vote> votes = readListFromResultActions(result, Vote.class);
 
-        assertThat(votes).usingRecursiveComparison().ignoringFields("restaurant", "user")
+        assertThat(votes).usingRecursiveComparison().ignoringFields("menu", "user")
                 .isEqualTo(VOTES_OF_USER2);
     }
 

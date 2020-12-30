@@ -1,8 +1,8 @@
 package com.github.srg13.votingsystem.service;
 
 import com.github.srg13.votingsystem.dao.VoteDao;
-import com.github.srg13.votingsystem.util.exception.IllegalRequestDataException;
 import com.github.srg13.votingsystem.model.Vote;
+import com.github.srg13.votingsystem.util.exception.IllegalRequestDataException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +11,8 @@ import org.springframework.test.context.jdbc.SqlConfig;
 
 import java.time.LocalDate;
 
-import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU2_ID;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU_ID;
 import static com.github.srg13.votingsystem.util.UserTestData.USER2_ID;
 import static com.github.srg13.votingsystem.util.VoteTestData.VOTES_OF_USER2;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,38 +30,43 @@ class VoteServiceTest {
 
     @Test
     void getAll() {
-        assertThat(service.getAll(USER2_ID)).usingElementComparatorIgnoringFields("restaurant", "user").isEqualTo(VOTES_OF_USER2);
+        assertThat(service.getAll(USER2_ID)).usingElementComparatorIgnoringFields("menu", "user").isEqualTo(VOTES_OF_USER2);
     }
 
     @Test
     void create() {
-        Vote created = service.create(new Vote(), USER2_ID, RESTAURANT3_ID);
+        Vote created = service.create(new Vote(), USER2_ID, MENU2_ID);
         int newId = created.getId();
         Vote newVote = new Vote();
         newVote.setId(newId);
         newVote.setVoteDateTime(created.getVoteDateTime());
 
-        assertThat(repository.findByUserIdAndDate(USER2_ID, created.getVoteDateTime().toLocalDate()).get())
-                .usingRecursiveComparison().ignoringFields("restaurant", "user").isEqualTo(newVote);
+        assertThat(repository.findById(newId).get())
+                .usingRecursiveComparison().ignoringFields("menu", "user", "voteDateTime").isEqualTo(newVote);
     }
 
     @Test
     void voteTwiceAfterTimeThreshold() {
-        service.create(new Vote(), USER2_ID, RESTAURANT3_ID);
+        service.create(new Vote(), USER2_ID, MENU2_ID);
         Vote vote = new Vote();
         vote.setVoteDateTime(LocalDate.now().atTime(13, 0));
 
-        assertThrows(IllegalRequestDataException.class, () -> service.create(vote, USER2_ID, RESTAURANT3_ID));
+        assertThrows(IllegalRequestDataException.class, () -> service.create(vote, USER2_ID, MENU2_ID));
     }
 
     @Test
     void voteTwiceBeforeTimeThreshold() {
-        service.create(new Vote(), USER2_ID, RESTAURANT3_ID);
+        service.create(new Vote(), USER2_ID, MENU2_ID);
         Vote vote = new Vote();
         vote.setVoteDateTime(LocalDate.now().atTime(10, 0));
-        service.create(vote, USER2_ID, RESTAURANT3_ID);
+        Vote created = service.create(vote, USER2_ID, MENU2_ID);
 
-        assertThat(repository.findByUserIdAndDate(USER2_ID, LocalDate.now()).get())
-                .usingRecursiveComparison().ignoringFields("restaurant", "user").isEqualTo(vote);
+        assertThat(repository.findById(created.getId()).get())
+                .usingRecursiveComparison().ignoringFields("menu", "user", "voteDateTime").isEqualTo(vote);
+    }
+
+    @Test
+    void voteForOldMenu() {
+        assertThrows(IllegalRequestDataException.class, () -> service.create(new Vote(), USER2_ID, MENU_ID));
     }
 }
