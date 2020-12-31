@@ -1,8 +1,8 @@
 package com.github.srg13.votingsystem.web.user;
 
-import com.github.srg13.votingsystem.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.User;
 import com.github.srg13.votingsystem.service.UserService;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+
+import static com.github.srg13.votingsystem.util.TestUtil.readFromResultActions;
+import static com.github.srg13.votingsystem.util.TestUtil.readListFromResultActions;
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,27 +31,34 @@ class AdminControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + USER_ID_NOT_VOTED)
+        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL + USER2_ID)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(USER_JSON));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        User user = readFromResultActions(result, User.class);
+
+        assertThat(user).usingRecursiveComparison().ignoringFields("password").isEqualTo(USER2);
+
     }
 
     @Test
     void getNotAllowed() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + USER_ID_NOT_VOTED)
+        perform(MockMvcRequestBuilders.get(REST_URL + USER2_ID)
                 .with(userHttpBasic(USER2)))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     void getByEmail() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "by?email=" + USER2.getEmail())
+        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL + "by?email=" + USER2.getEmail())
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(USER_JSON));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        User user = readFromResultActions(result, User.class);
+
+        assertThat(user).usingRecursiveComparison().ignoringFields("password").isEqualTo(USER2);
     }
 
     @Test
@@ -61,30 +72,32 @@ class AdminControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL)
+        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(USERS_JSON));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        List<User> users = readListFromResultActions(result, User.class);
+
+        assertThat(users).usingElementComparatorIgnoringFields("password").isEqualTo(USERS);
     }
 
     @Test
     void createWithLocation() throws Exception {
         User newUser = getNew();
-        ResultActions resultActions = perform(MockMvcRequestBuilders.post(REST_URL)
+        ResultActions result = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(ADMIN))
                 .content(USER_JSON_NEW)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
 
-        String json = resultActions.andReturn().getResponse().getContentAsString();
-        User result = readValue(json, User.class);
-        newUser.setId(result.getId());
+        User user = readFromResultActions(result, User.class);
+        newUser.setId(user.getId());
 
         assertThat(result).usingRecursiveComparison().ignoringFields("password").isEqualTo(newUser);
 
-        assertThat(service.get(result.getId())).usingRecursiveComparison().ignoringFields("password").isEqualTo(newUser);
+        assertThat(service.get(user.getId())).usingRecursiveComparison().ignoringFields("password").isEqualTo(newUser);
     }
 
     @Test
@@ -97,6 +110,5 @@ class AdminControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         assertThat(service.get(updated.getId())).usingRecursiveComparison().ignoringFields("password").isEqualTo(updated);
-
     }
 }

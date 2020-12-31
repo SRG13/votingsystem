@@ -72,7 +72,7 @@ public class User extends AbstractNamedEntity {
         return "User{" +
                 "id=" + id +
                 ", name=" + name +
-                ", email='" + email +
+                ", email=" + email +
                 ", registered=" + registered +
                 ", enabled=" + enabled +
                 ", roles=" + roles +

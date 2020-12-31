@@ -1,7 +1,5 @@
 package com.github.srg13.votingsystem.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -30,9 +28,6 @@ public class AbstractControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    protected ObjectMapper objectMapper;
-
-    @Autowired
     private WebApplicationContext webApplicationContext;
 
     @PostConstruct
@@ -46,21 +41,5 @@ public class AbstractControllerTest {
 
     public ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
-    }
-
-    protected String writeValue(final Object obj) {
-        try {
-            return objectMapper.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Invalid write to JSON:\n'" + obj + "'", e);
-        }
-    }
-
-    protected <T> T readValue(String json, Class<T> clazz) {
-        try {
-            return objectMapper.readValue(json, clazz);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Invalid read from JSON:\n'" + json + "'", e);
-        }
     }
 }

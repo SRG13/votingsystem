@@ -1,6 +1,7 @@
 package com.github.srg13.votingsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,10 +13,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -35,9 +38,14 @@ public class Menu extends AbstractNamedEntity {
     @NotNull
     private LocalDate date = LocalDate.now();
 
-    public Menu(Integer id, String name, @NotNull LocalDate date) {
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "menu")
+    @JsonManagedReference
+    private List<Dish> dishes;
+
+    public Menu(Integer id, String name, @NotNull LocalDate date, List<Dish> dishes) {
         super(id, name);
         this.date = date;
+        this.dishes = dishes;
     }
 
     @Override

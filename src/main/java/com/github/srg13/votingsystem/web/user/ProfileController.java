@@ -2,9 +2,6 @@ package com.github.srg13.votingsystem.web.user;
 
 import com.github.srg13.votingsystem.AuthorizedUser;
 import com.github.srg13.votingsystem.model.User;
-import com.github.srg13.votingsystem.model.Vote;
-import com.github.srg13.votingsystem.service.VoteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +18,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping(ProfileController.REST_URL)
 public class ProfileController extends AbstractUserController {
     protected static final String REST_URL = "/profile";
-
-    @Autowired
-    private VoteService voteService;
 
     @GetMapping
     public User get(@AuthenticationPrincipal AuthorizedUser authUser) {
@@ -58,10 +51,5 @@ public class ProfileController extends AbstractUserController {
                 .toUri();
 
         return ResponseEntity.created(uriOfNewResource).body(created);
-    }
-
-    @GetMapping("/vote-history")
-    public List<Vote> getVotes(@AuthenticationPrincipal AuthorizedUser authUser) {
-        return voteService.getAll(authUser.getId());
     }
 }

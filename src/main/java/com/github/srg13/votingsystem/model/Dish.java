@@ -1,9 +1,11 @@
 package com.github.srg13.votingsystem.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,9 +27,10 @@ import java.math.BigDecimal;
         name = "unique_menu_id_name_idx")})
 public class Dish extends AbstractNamedEntity {
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference
     private Menu menu;
 
     @Column(name = "price", nullable = false)
@@ -39,6 +42,11 @@ public class Dish extends AbstractNamedEntity {
     public Dish(Integer id, String name, Menu menu, @NotNull @DecimalMin(value = "0.0") @Digits(integer = 4, fraction = 2) BigDecimal price) {
         super(id, name);
         this.menu = menu;
+        this.price = price;
+    }
+
+    public Dish(Integer id, String name, @NotNull @DecimalMin(value = "0.0") @Digits(integer = 4, fraction = 2) BigDecimal price) {
+        super(id, name);
         this.price = price;
     }
 

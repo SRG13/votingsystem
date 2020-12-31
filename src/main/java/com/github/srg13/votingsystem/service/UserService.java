@@ -2,7 +2,7 @@ package com.github.srg13.votingsystem.service;
 
 import com.github.srg13.votingsystem.AuthorizedUser;
 import com.github.srg13.votingsystem.dao.UserDao;
-import com.github.srg13.votingsystem.exception.NotFoundException;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

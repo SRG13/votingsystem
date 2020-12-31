@@ -1,8 +1,8 @@
 package com.github.srg13.votingsystem.service;
 
-import com.github.srg13.votingsystem.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Role;
 import com.github.srg13.votingsystem.model.User;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 
+import static com.github.srg13.votingsystem.util.TestUtil.NOT_FOUND_ID;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1_ID;
 import static com.github.srg13.votingsystem.util.UserTestData.USERS;
@@ -36,8 +37,8 @@ class UserServiceTest {
     }
 
     @Test
-    void getNotExist() {
-        assertThrows(NotFoundException.class, () -> service.get(-1));
+    void getNotFound() {
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND_ID));
     }
 
     @Test
