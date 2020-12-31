@@ -15,11 +15,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
-import static com.github.srg13.votingsystem.util.DishTestData.DISHES;
 import static com.github.srg13.votingsystem.util.JsonUtil.writeValue;
-import static com.github.srg13.votingsystem.util.MenuTestData.MENU;
-import static com.github.srg13.votingsystem.util.MenuTestData.MENUS_OF_RESTAURANT3;
-import static com.github.srg13.votingsystem.util.MenuTestData.MENU_ID;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU3;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU3_ID;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENUS3;
 import static com.github.srg13.votingsystem.util.MenuTestData.getNew;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT2_ID;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
@@ -46,28 +45,28 @@ class MenuControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL + MENU_ID))
+        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL + MENU3_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
         Menu menu = readFromResultActions(result, Menu.class);
 
-        assertThat(menu).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENU);
-        assertThat(menu.getDishes()).usingElementComparatorIgnoringFields("menu").isEqualTo(DISHES);
+        assertThat(menu).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENU3);
+        assertThat(menu.getDishes()).usingElementComparatorIgnoringFields("menu").isEqualTo(MENU3.getDishes());
     }
 
     @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + MENU_ID)
+        perform(MockMvcRequestBuilders.delete(REST_URL + MENU3_ID)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
 
-        assertThrows(NotFoundException.class, () -> service.get(MENU_ID, RESTAURANT3_ID));
+        assertThrows(NotFoundException.class, () -> service.get(MENU3_ID, RESTAURANT3_ID));
     }
 
     @Test
     void deleteNotAllowed() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + MENU_ID)
+        perform(MockMvcRequestBuilders.delete(REST_URL + MENU3_ID)
                 .with(userHttpBasic(USER1)))
                 .andExpect(status().is4xxClientError());
     }
@@ -80,7 +79,7 @@ class MenuControllerTest extends AbstractControllerTest {
 
         List<Menu> menus = readListFromResultActions(result, Menu.class);
 
-        assertThat(menus).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENUS_OF_RESTAURANT3);
+        assertThat(menus).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENUS3);
     }
 
     @Test

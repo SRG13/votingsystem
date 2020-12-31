@@ -1,12 +1,10 @@
 package com.github.srg13.votingsystem.web.restaurant;
 
 import com.github.srg13.votingsystem.dao.RestaurantDao;
-import com.github.srg13.votingsystem.dao.VoteDao;
 import com.github.srg13.votingsystem.dto.RestaurantTo;
-import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.Restaurant;
-import com.github.srg13.votingsystem.model.Vote;
 import com.github.srg13.votingsystem.service.RestaurantService;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ import static com.github.srg13.votingsystem.util.TestUtil.readListFromResultActi
 import static com.github.srg13.votingsystem.util.TestUtil.userHttpBasic;
 import static com.github.srg13.votingsystem.util.UserTestData.ADMIN;
 import static com.github.srg13.votingsystem.util.UserTestData.USER1;
-import static com.github.srg13.votingsystem.util.UserTestData.USER2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -42,13 +39,15 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT3_ID))
+        ResultActions result = perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
         RestaurantTo restaurantTo = readFromResultActions(result, RestaurantTo.class);
 
-        assertThat(restaurantTo).usingRecursiveComparison().ignoringFields("menuOfDay").isEqualTo(RESTAURANT3_TO);
+        assertThat(restaurantTo).usingRecursiveComparison().ignoringFields("menuOfDay").isEqualTo(RESTAURANT1_TO);
+        assertThat(restaurantTo.getMenuOfDay()).usingRecursiveComparison().ignoringFields("restaurant", "dishes")
+                .isEqualTo(RESTAURANT1_TO.getMenuOfDay());
     }
 
     @Test

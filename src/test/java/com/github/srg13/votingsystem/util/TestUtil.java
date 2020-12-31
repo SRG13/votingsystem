@@ -11,6 +11,8 @@ import java.util.List;
 
 public class TestUtil {
 
+    public static final int NOT_FOUND_ID = 10;
+
     public static String getContent(MvcResult result) throws UnsupportedEncodingException {
         return result.getResponse().getContentAsString();
     }

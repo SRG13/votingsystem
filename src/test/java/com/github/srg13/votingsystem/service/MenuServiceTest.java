@@ -1,21 +1,21 @@
 package com.github.srg13.votingsystem.service;
 
+import com.github.srg13.votingsystem.model.Menu;
 import com.github.srg13.votingsystem.util.exception.IllegalRequestDataException;
 import com.github.srg13.votingsystem.util.exception.NotFoundException;
-import com.github.srg13.votingsystem.model.Menu;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import static com.github.srg13.votingsystem.util.DishTestData.DISHES;
-import static com.github.srg13.votingsystem.util.MenuTestData.MENU;
-import static com.github.srg13.votingsystem.util.MenuTestData.MENUS_OF_RESTAURANT3;
-import static com.github.srg13.votingsystem.util.MenuTestData.MENU_ID;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU3;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU3_ID;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENUS3;
 import static com.github.srg13.votingsystem.util.MenuTestData.getNew;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT2_ID;
 import static com.github.srg13.votingsystem.util.RestaurantTestData.RESTAURANT3_ID;
+import static com.github.srg13.votingsystem.util.TestUtil.NOT_FOUND_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -28,36 +28,36 @@ class MenuServiceTest {
 
     @Test
     void get() {
-        Menu menu = service.get(MENU_ID, RESTAURANT3_ID);
+        Menu menu = service.get(MENU3_ID, RESTAURANT3_ID);
 
-        assertThat(menu).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENU);
-        assertThat(menu.getDishes()).usingElementComparatorIgnoringFields("menu").isEqualTo(DISHES);
+        assertThat(menu).usingRecursiveComparison().ignoringFields("restaurant", "dishes").isEqualTo(MENU3);
+        assertThat(menu.getDishes()).usingElementComparatorIgnoringFields("menu").isEqualTo(MENU3.getDishes());
     }
 
     @Test
     void getNotOwnMenu() {
-        assertThrows(NotFoundException.class, () -> service.get(MENU_ID, RESTAURANT2_ID));
+        assertThrows(NotFoundException.class, () -> service.get(MENU3_ID, RESTAURANT2_ID));
     }
 
     @Test
-    void getNotExist() {
-        assertThrows(NotFoundException.class, () -> service.get(-1, RESTAURANT3_ID));
+    void getNotFound() {
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND_ID, RESTAURANT3_ID));
     }
 
     @Test
     void delete() {
-        service.delete(MENU_ID, RESTAURANT3_ID);
-        assertThrows(NotFoundException.class, () -> service.get(MENU_ID, RESTAURANT3_ID));
+        service.delete(MENU3_ID, RESTAURANT3_ID);
+        assertThrows(NotFoundException.class, () -> service.get(MENU3_ID, RESTAURANT3_ID));
     }
 
     @Test
     void deleteNotOwnMenu() {
-        assertThrows(IllegalRequestDataException.class, () -> service.delete(MENU_ID, RESTAURANT2_ID));
+        assertThrows(IllegalRequestDataException.class, () -> service.delete(MENU3_ID, RESTAURANT2_ID));
     }
 
     @Test
     void getAll() {
-        assertThat(service.getAll(RESTAURANT3_ID)).usingElementComparatorIgnoringFields("restaurant", "dishes").isEqualTo(MENUS_OF_RESTAURANT3);
+        assertThat(service.getAll(RESTAURANT3_ID)).usingElementComparatorIgnoringFields("restaurant", "dishes").isEqualTo(MENUS3);
     }
 
     @Test
@@ -81,7 +81,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void createForNotExistRestaurant() {
-        assertThrows(NotFoundException.class, () -> service.create(getNew(), -1));
+    void createForNotFoundRestaurant() {
+        assertThrows(NotFoundException.class, () -> service.create(getNew(), NOT_FOUND_ID));
     }
 }

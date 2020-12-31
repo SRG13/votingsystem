@@ -1,8 +1,8 @@
 package com.github.srg13.votingsystem.web.user;
 
-import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.model.User;
 import com.github.srg13.votingsystem.service.UserService;
+import com.github.srg13.votingsystem.util.exception.NotFoundException;
 import com.github.srg13.votingsystem.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +110,5 @@ class AdminControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         assertThat(service.get(updated.getId())).usingRecursiveComparison().ignoringFields("password").isEqualTo(updated);
-
     }
 }

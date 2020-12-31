@@ -11,8 +11,8 @@ import org.springframework.test.context.jdbc.SqlConfig;
 
 import java.time.LocalDate;
 
-import static com.github.srg13.votingsystem.util.MenuTestData.MENU2_ID;
-import static com.github.srg13.votingsystem.util.MenuTestData.MENU_ID;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU1_ID;
+import static com.github.srg13.votingsystem.util.MenuTestData.MENU3_ID;
 import static com.github.srg13.votingsystem.util.UserTestData.USER2_ID;
 import static com.github.srg13.votingsystem.util.VoteTestData.VOTES_OF_USER2;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +35,7 @@ class VoteServiceTest {
 
     @Test
     void create() {
-        Vote created = service.create(new Vote(), USER2_ID, MENU2_ID);
+        Vote created = service.create(new Vote(), USER2_ID, MENU1_ID);
         int newId = created.getId();
         Vote newVote = new Vote();
         newVote.setId(newId);
@@ -47,19 +47,19 @@ class VoteServiceTest {
 
     @Test
     void voteTwiceAfterTimeThreshold() {
-        service.create(new Vote(), USER2_ID, MENU2_ID);
+        service.create(new Vote(), USER2_ID, MENU1_ID);
         Vote vote = new Vote();
         vote.setVoteDateTime(LocalDate.now().atTime(13, 0));
 
-        assertThrows(IllegalRequestDataException.class, () -> service.create(vote, USER2_ID, MENU2_ID));
+        assertThrows(IllegalRequestDataException.class, () -> service.create(vote, USER2_ID, MENU1_ID));
     }
 
     @Test
     void voteTwiceBeforeTimeThreshold() {
-        service.create(new Vote(), USER2_ID, MENU2_ID);
+        service.create(new Vote(), USER2_ID, MENU1_ID);
         Vote vote = new Vote();
         vote.setVoteDateTime(LocalDate.now().atTime(10, 0));
-        Vote created = service.create(vote, USER2_ID, MENU2_ID);
+        Vote created = service.create(vote, USER2_ID, MENU1_ID);
 
         assertThat(repository.findById(created.getId()).get())
                 .usingRecursiveComparison().ignoringFields("menu", "user", "voteDateTime").isEqualTo(vote);
@@ -67,6 +67,6 @@ class VoteServiceTest {
 
     @Test
     void voteForOldMenu() {
-        assertThrows(IllegalRequestDataException.class, () -> service.create(new Vote(), USER2_ID, MENU_ID));
+        assertThrows(IllegalRequestDataException.class, () -> service.create(new Vote(), USER2_ID, MENU3_ID));
     }
 }
