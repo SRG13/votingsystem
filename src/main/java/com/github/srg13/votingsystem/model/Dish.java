@@ -45,6 +45,11 @@ public class Dish extends AbstractNamedEntity {
         this.price = price;
     }
 
+    public Dish(Integer id, String name, @NotNull @DecimalMin(value = "0.0") @Digits(integer = 4, fraction = 2) BigDecimal price) {
+        super(id, name);
+        this.price = price;
+    }
+
     @Override
     public String toString() {
         return "Dish{" +
