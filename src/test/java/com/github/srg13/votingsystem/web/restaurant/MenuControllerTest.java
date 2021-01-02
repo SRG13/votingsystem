@@ -113,8 +113,7 @@ class MenuControllerTest extends AbstractControllerTest {
     @Test
     void vote() throws Exception {
         ResultActions result = perform(MockMvcRequestBuilders.post("/restaurants/" + RESTAURANT2_ID + "/menus/100014")
-                .with(userHttpBasic(USER2))
-                .contentType(MediaType.APPLICATION_JSON))
+                .with(userHttpBasic(USER2)))
                 .andExpect(status().isCreated());
 
         Vote vote = readFromResultActions(result, Vote.class);

@@ -78,7 +78,7 @@ public class MenuController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PostMapping(value = "/{menuId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{menuId}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthorizedUser authUser, @PathVariable int menuId) {
         log.info("create vote for user {} and menu {}", authUser.getId(), menuId);
