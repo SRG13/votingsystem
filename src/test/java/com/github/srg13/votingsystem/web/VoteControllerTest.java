@@ -1,9 +1,7 @@
 package com.github.srg13.votingsystem.web;
 
-import com.github.srg13.votingsystem.dao.VoteDao;
 import com.github.srg13.votingsystem.model.Vote;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,9 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class VoteControllerTest extends AbstractControllerTest {
 
     public static final String REST_URL = "/profile/votes";
-
-    @Autowired
-    private VoteDao repository;
 
     @Test
     void get() throws Exception {
